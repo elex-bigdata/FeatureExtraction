@@ -29,4 +29,13 @@ public class Constants {
 	public static String getToday(){
 		return sdf.format(new Date());
 	}
+	
+	public static String getYestoday(){
+        Calendar ca = Calendar.getInstance();
+		
+		Date now = new Date();
+		ca.setTime(now);
+		ca.add(Calendar.DAY_OF_MONTH, -1);
+		return sdf.format(ca.getTime());
+	}
 }
