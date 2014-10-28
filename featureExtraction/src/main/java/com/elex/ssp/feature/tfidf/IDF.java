@@ -136,7 +136,7 @@ public class IDF extends Configured implements Tool {
 		@Override
 		protected void map(LongWritable key, Text value, Context context)
 				throws IOException, InterruptedException {
-			kv=key.toString().split(",");
+			kv=value.toString().split(",");
 			if(kv.length==4){
 				uid = kv[0];
 				word =kv[1];
@@ -144,7 +144,7 @@ public class IDF extends Configured implements Tool {
 				tf = Double.parseDouble(kv[3]);
 				idf = Math.log(Double.valueOf(new Double(docs) / new Double(words.get(word)==null?1:words.get(word)+1)));
 				tfidf = tf * idf;
-				context.write(null,new Text(uid + "," + word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)));
+				context.write(new Text(uid + "," + word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)),null);
 			}									
 		}
 
