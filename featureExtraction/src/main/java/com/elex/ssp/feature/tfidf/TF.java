@@ -129,7 +129,7 @@ public class TF extends Configured implements Tool{
 					nKey.set(kv[0]+","+entry.getKey());
 					nValue.set(entry.getValue()+","+df.format(new Double(entry.getValue())/new Double(wc)));
 					tf.write(nKey, nValue, "tf");
-					context.write(null, new Text(entry.getKey()+","+"1"));
+					context.write(new Text(entry.getKey()), new Text("1"));
 				}
 			}
 			
@@ -160,7 +160,7 @@ public class TF extends Configured implements Tool{
 				docs++;
 			}
 			
-			context.write(key, new Text(Integer.toString(docs)));
+			context.write(null, new Text(key.toString()+","+Integer.toString(docs)));
 		}
 				
 	}
