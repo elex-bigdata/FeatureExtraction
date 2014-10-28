@@ -19,7 +19,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -88,7 +87,7 @@ public class IDF extends Configured implements Tool {
 	}
 	
 	public static void loadResultToHive(Path path) throws SQLException{
-		String hql = "load data inpath '"+path.toString()+"' into table "+Constants.TFIDFTABLE +" partition(day='"+Constants.getToday()+"')";
+		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE+")";
 		HiveOperator.loadDataToHiveTable(hql);
 		
 	}
