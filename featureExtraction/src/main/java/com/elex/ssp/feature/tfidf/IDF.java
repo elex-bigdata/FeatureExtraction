@@ -18,6 +18,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -49,6 +51,7 @@ public class IDF extends Configured implements Tool {
 		Job job = Job.getInstance(conf, "idf");
 		job.setJarByClass(IDF.class);
 		job.setMapperClass(MyMapper.class);
+		job.setReducerClass(MyReducer.class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
@@ -77,9 +80,9 @@ public class IDF extends Configured implements Tool {
 		FileOutputFormat.setOutputPath(job, output);
 
 		int result = job.waitForCompletion(true) ? 0 : 1;
-		
-		loadResultToHive(output);
-		
+		if(result==0){
+			loadResultToHive(output);
+		}		
 		return result;
 		
 	}
@@ -144,10 +147,23 @@ public class IDF extends Configured implements Tool {
 				tf = Double.parseDouble(kv[3]);
 				idf = Math.log(Double.valueOf(new Double(docs) / new Double(words.get(word)==null?1:words.get(word)+1)));
 				tfidf = tf * idf;
-				context.write(new Text(uid + "," + word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)),null);
+				context.write(new Text(uid),new Text(word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)));
 			}									
 		}
 
+	}
+	
+	public static class MyReducer extends Reducer<Text, Text, Text, Text> {
+		
+		@Override
+		protected void reduce(Text key, Iterable<Text> values,Context context)
+				throws IOException, InterruptedException {
+			for(Text v:values){
+				context.write(null, new Text(key.toString()+","+v.toString()));
+			}
+			
+		}
+				
 	}
 
 }
