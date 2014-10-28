@@ -78,7 +78,6 @@ public class TF extends Configured implements Tool{
 		
 		String userCount = PropertiesUtils.getRootDir() + Constants.USERCOUNT;
 		ct = job.getCounters().findCounter("HAS_QUERY","USER_COUNT");
-		System.out.println("records:"+new Long(ct.getValue()).intValue());
 		HdfsUtil.writeInt(new Long(ct.getValue()).intValue(), new Path(userCount), conf);
 		
 		return result;

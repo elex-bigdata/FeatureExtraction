@@ -20,6 +20,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -69,6 +70,7 @@ public class IDF extends Configured implements Tool {
 
 		}
 
+		job.setOutputFormatClass(TextOutputFormat.class);
 		Path output = new Path(PropertiesUtils.getRootDir() + Constants.IDF);
 		HdfsUtil.delFile(fs, output.toString());
 		FileOutputFormat.setOutputPath(job, output);
