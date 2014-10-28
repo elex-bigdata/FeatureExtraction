@@ -22,6 +22,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -67,7 +68,7 @@ public class TF extends Configured implements Tool{
 		FileInputFormat.addInputPath(job, in);
 		
 		job.setOutputFormatClass(TextOutputFormat.class);
-		MultipleOutputs.addNamedOutput(job, "tf", org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat.class, Text.class, Text.class);
+		MultipleOutputs.addNamedOutput(job, "tf", SequenceFileOutputFormat.class, Text.class, Text.class);
 		
 		Path output = new Path(PropertiesUtils.getRootDir() + Constants.TF);
 		HdfsUtil.delFile(fs, output.toString());
@@ -76,7 +77,7 @@ public class TF extends Configured implements Tool{
 		int result = job.waitForCompletion(true) ? 0 : 1;
 		
 		String userCount = PropertiesUtils.getRootDir() + Constants.USERCOUNT;
-		ct = job.getCounters().findCounter("Map-Reduce Framework", "Map input records");
+		ct = job.getCounters().findCounter("HAS_QUERY","USER_COUNT");
 		System.out.println("records:"+new Long(ct.getValue()).intValue());
 		HdfsUtil.writeInt(new Long(ct.getValue()).intValue(), new Path(userCount), conf);
 		
@@ -131,6 +132,7 @@ public class TF extends Configured implements Tool{
 					tf.write(nKey, nValue, "tf");
 					context.write(new Text(entry.getKey()), new Text("1"));
 				}
+				context.getCounter("HAS_QUERY","USER_COUNT").increment(1);
 			}
 			
 						
