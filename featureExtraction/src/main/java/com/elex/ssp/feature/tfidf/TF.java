@@ -68,7 +68,7 @@ public class TF extends Configured implements Tool{
 		FileInputFormat.addInputPath(job, in);
 		
 		job.setOutputFormatClass(TextOutputFormat.class);
-		MultipleOutputs.addNamedOutput(job, "tf", SequenceFileOutputFormat.class, Text.class, Text.class);
+		MultipleOutputs.addNamedOutput(job, "tf", TextOutputFormat.class, Text.class, Text.class);
 		
 		Path output = new Path(PropertiesUtils.getRootDir() + Constants.TF);
 		HdfsUtil.delFile(fs, output.toString());
@@ -102,8 +102,6 @@ public class TF extends Configured implements Tool{
 		private DecimalFormat df = Constants.df;
 		private int wc = 0;
 		private MultipleOutputs<Text, Text> tf;  
-		private Text nKey = new Text();
-		private Text nValue = new Text();
 		private String[] kv;
 		
 		@Override
@@ -126,9 +124,7 @@ public class TF extends Configured implements Tool{
 				ite = user.entrySet().iterator();
 				while(ite.hasNext()){
 					entry = ite.next();
-					nKey.set(kv[0]+","+entry.getKey());
-					nValue.set(entry.getValue()+","+df.format(new Double(entry.getValue())/new Double(wc)));
-					tf.write(nKey, nValue, "tf");
+					tf.write(new Text(kv[0]+","+entry.getKey()+","+entry.getValue()+","+df.format(new Double(entry.getValue())/new Double(wc))), null, "tf");
 					context.write(new Text(entry.getKey()), new Text("1"));
 				}
 				context.getCounter("HAS_QUERY","USER_COUNT").increment(1);
