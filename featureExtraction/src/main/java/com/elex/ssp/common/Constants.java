@@ -14,6 +14,7 @@ public class Constants {
 	public static final String TFIDFTABLE="tfidf";
 	public static final DecimalFormat df = new DecimalFormat("#.####");
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	public static final String UDFJAR = "/home/hadoop/wuzhongju/ssp/feUDF-1.0.jar";
 
 	public static String getStartDay(){
 		Calendar ca = Calendar.getInstance();
@@ -21,7 +22,7 @@ public class Constants {
 		Date now = new Date();
 		int mergeDays = PropertiesUtils.getMergeDays()+1;		
 		ca.setTime(now);
-		ca.add(Calendar.DAY_OF_MONTH, -mergeDays);
+		ca.add(Calendar.DATE, -mergeDays);
 		String day = sdf.format(ca.getTime());	
 		return day;
 	}
@@ -35,7 +36,7 @@ public class Constants {
 		
 		Date now = new Date();
 		ca.setTime(now);
-		ca.add(Calendar.DAY_OF_MONTH, -1);
+		ca.add(Calendar.DATE, -1);
 		return sdf.format(ca.getTime());
 	}
 }

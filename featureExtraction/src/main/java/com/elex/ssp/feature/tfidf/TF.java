@@ -84,6 +84,9 @@ public class TF extends Configured implements Tool{
 	public static void prepareInput(String uri) throws SQLException{
 		String day = Constants.getStartDay();
 		String sql = "select uid,CONCAT_WS(' ',collect_set(query)) from qeury_en where day <'"+day+"' group by uid";
+		System.out.println("=================TF-,nation-sql===================");
+		System.out.println(sql);
+		System.out.println("=================TF-,nation-sql===================");
 		HiveOperator.export(uri, sql);		
 	}
 	
@@ -152,9 +155,7 @@ public class TF extends Configured implements Tool{
 			
 			context.write(key, new Text(Integer.toString(docs)));
 		}
-
-		
-		
+				
 	}
 				
 
