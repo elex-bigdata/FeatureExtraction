@@ -67,7 +67,7 @@ public class TF extends Configured implements Tool{
 		FileInputFormat.addInputPath(job, in);
 		
 		job.setOutputFormatClass(TextOutputFormat.class);
-		MultipleOutputs.addNamedOutput(job, "tf", TextOutputFormat.class, Text.class, Text.class);
+		MultipleOutputs.addNamedOutput(job, "tf", org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat.class, Text.class, Text.class);
 		
 		Path output = new Path(PropertiesUtils.getRootDir() + Constants.TF);
 		HdfsUtil.delFile(fs, output.toString());
@@ -76,7 +76,8 @@ public class TF extends Configured implements Tool{
 		int result = job.waitForCompletion(true) ? 0 : 1;
 		
 		String userCount = PropertiesUtils.getRootDir() + Constants.USERCOUNT;
-		ct = job.getCounters().findCounter("Map-Reduce Framework", "Map input records");		
+		ct = job.getCounters().findCounter("Map-Reduce Framework", "Map input records");
+		System.out.println("records:"+new Long(ct.getValue()).intValue());
 		HdfsUtil.writeInt(new Long(ct.getValue()).intValue(), new Path(userCount), conf);
 		
 		return result;
@@ -84,10 +85,10 @@ public class TF extends Configured implements Tool{
 	
 	public static void prepareInput(String uri) throws SQLException{
 		String day = Constants.getStartDay();
-		String sql = "select uid,CONCAT_WS(' ',collect_set(query)) from qeury_en where day >'"+day+"' group by uid";
-		System.out.println("=================TF-,nation-sql===================");
+		String sql = "select uid,CONCAT_WS(' ',collect_set(query)) from query_en where day >'"+day+"' group by uid";
+		System.out.println("=================TF-prepareInput-sql===================");
 		System.out.println(sql);
-		System.out.println("=================TF-,nation-sql===================");
+		System.out.println("=================TF-prepareInput-sql===================");
 		HiveOperator.exportHdfs(uri, sql);		
 	}
 	
@@ -126,9 +127,9 @@ public class TF extends Configured implements Tool{
 				while(ite.hasNext()){
 					entry = ite.next();
 					nKey.set(kv[0]+","+entry.getKey());
-					nValue.set(entry.getValue()+","+df.format(entry.getValue()/wc));
+					nValue.set(entry.getValue()+","+df.format(new Double(entry.getValue())/new Double(wc)));
 					tf.write(nKey, nValue, "tf");
-					context.write(new Text(entry.getKey()), new Text("1"));
+					context.write(null, new Text(entry.getKey()+","+"1"));
 				}
 			}
 			

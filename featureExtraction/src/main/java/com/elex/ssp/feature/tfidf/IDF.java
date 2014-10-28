@@ -14,7 +14,6 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -88,7 +87,7 @@ public class IDF extends Configured implements Tool {
 		
 	}
 
-	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text> {
+	public static class MyMapper extends Mapper<Text, Text, Text, Text> {
 
 		private Map<String, Integer> words = new HashMap<String, Integer>();
 		private DecimalFormat df = Constants.df;
@@ -132,19 +131,24 @@ public class IDF extends Configured implements Tool {
 		}
 
 		@Override
-		protected void map(LongWritable key, Text value, Context context)
+		protected void map(Text key, Text value, Context context)
 				throws IOException, InterruptedException {
-			kv =value.toString().split(",");
-			if(kv.length == 4){
-				uid = kv[0];
-				word = kv[1];
-				wc = Integer.parseInt(kv[2]);
-				tf = Double.parseDouble(kv[3]);
-				idf = Math.log(Double.valueOf(docs / words.get(word)));
-				tfidf = tf * idf;
-				context.write(null,new Text(uid + "," + word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)));
+			kv=key.toString().split(",");
+			if(kv.length==2){
+				uid = key.toString().split(",")[0];
+				word = key.toString().split(",")[1];
 			}
 			
+			kv=value.toString().split(",");
+			if(kv.length==2){
+				wc = Integer.parseInt(value.toString().split(",")[0]);
+				tf = Double.parseDouble(value.toString().split(",")[1]);
+			}
+			
+			
+			idf = Math.log(Double.valueOf(new Double(docs) / new Double(words.get(word))));
+			tfidf = tf * idf;
+			context.write(null,new Text(uid + "," + word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)));
 
 		}
 
