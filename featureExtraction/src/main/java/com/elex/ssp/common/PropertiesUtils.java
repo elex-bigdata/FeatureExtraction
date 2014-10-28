@@ -11,7 +11,7 @@ public class PropertiesUtils {
 	static{
 		InputStream is = null;
 		try{
-			is = PropertiesUtils.class.getClassLoader().getResourceAsStream("config.properties");
+			is = PropertiesUtils.class.getClassLoader().getResourceAsStream("conf.properties");
 			pop.load(is);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -24,6 +24,7 @@ public class PropertiesUtils {
 			}
 		}
 	}
+	
 	public static String getRootDir() {
 
 		return pop.getProperty("rootdir");
