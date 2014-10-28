@@ -1,0 +1,66 @@
+git clone https://github.com/elex-bigdata/feudf.git
+
+add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+
+CREATE TEMPORARY FUNCTION area AS 'com.elex.ssp.udf.IPDim';
+CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query';
+CREATE TEMPORARY FUNCTION wc AS 'com.elex.ssp.udf.WordCount';
+CREATE TEMPORARY FUNCTION ql AS 'com.elex.ssp.udf.QueryLength';
+CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit';
+CREATE TEMPORARY FUNCTION rank AS 'com.elex.ssp.udf.R';
+
+select qn(keyword) as col1,ql(keyword) as col2,wc(keyword) as col2 from search where day ='20141021' and nation='ph' limit 10;
+
+
+CREATE TEMPORARY FUNCTION timefunc as 'com.elex.ssp.udf.TimeDim';
+select timefunc("2014-10-09 13:20:01","us") as col1 from dual;
+DROP  TEMPORARY  FUNCTION timefunc;
+
+CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord';
+select sed(keyword) as col1 from search where day ='20141021' and nation='ph' limit 10;
+
+======================准备输入数据==============================
+INSERT OVERWRITE LOCAL DIRECTORY '/home/hadoop/test' row format delimited fields terminated by ',' stored as textfile
+array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),s.nation)
+
+#齐全备料表
+create table log_merge(reqid string,uid string,pid string,ip string,nation string,ua string,os string,width string,height string,pv int,adid string,impr int,time string,click int,query string,sv int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+(SELECT reqid,MAX(uid) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv FROM nav_visit WHERE DAY = '20141022' GROUP BY reqid )a
+
+(SELECT reqid,adid,MAX(time)as time,COUNT(uid) AS impr FROM ad_impression WHERE DAY='20141022' GROUP BY reqid,adid)b
+
+(SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='20141022' GROUP BY reqid)c
+
+(SELECT reqid,CONCAT_WS(' ',collect_set(qn(keyword))) AS q,COUNT(uid) AS sv FROM search WHERE DAY='20141022' GROUP BY reqid)d
+
+#产生齐全备料表, 假设每个页面至少有一个广告，则从广告展现表为基表进行关联数据是完整的，如果页面没有广告但有搜索，这种统计方式会漏掉部分页面展示pv和搜索日志。
+#另外，由于目前广告点击无法计量adid，一旦一个页面有多个广告，目前的统计方式会导致广告点击量重复记录，需要改变join表b到表c的join方式，增加adid的等值关联。
+insert overwrite table log_merge partition(day='20141022')
+ SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,a.pv,b.adid,b.impr,b.time,c.click,d.q,d.sv FROM (SELECT reqid,adid,MAX(time)as time,COUNT(uid) AS impr FROM ad_impression WHERE DAY='20141022' GROUP BY reqid,adid)b LEFT OUTER JOIN (SELECT reqid,MAX(uid) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,COUNT(1) AS pv FROM nav_visit WHERE DAY = '20141022' GROUP BY reqid )a ON a.reqid=b.reqid LEFT OUTER JOIN (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='20141022' GROUP BY reqid)c ON c.reqid=b.reqid LEFT OUTER JOIN (SELECT reqid,CONCAT_WS(':',collect_set(qn(keyword))) AS q,COUNT(uid) AS sv FROM search WHERE DAY='20141022' GROUP BY reqid)d ON d.reqid=b.reqid
+
+#英语国家搜索日志
+create table query_en(reqid string,uid string,pid string,query string,nation string,adid string,pv int,impr int,sv int,click int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+#产生英语国家搜索日志
+insert overwrite table query_en partition(day='20141022')
+ select reqid,uid,pid,tab.col1,nation,adid,pv,impr,sv,click from log_merge lateral view qs(query,':') tab as col1 where day ='20141022' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null;
+
+#关键词的tfidf表
+create table tfidf(uid string,word string,wc int,tf double,idf double,tfidf double)partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+================================输入数据准备完成===================================
+
+======================中间结果表 start===============================
+#中间结果表，按特征类型和日期分区。特征类型有：query,query_length,query_word_count,keyword,time,area,browser,user,project
+#fv(特征值),ft(特征类型),nv(nav_visit_count),sv(search_count),impr(广告展示量),click(广告点击量)
+create table feature(fv string,nation string,adid string,pv int,sv int,impr int,click int) partitioned by(day string,ft string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+#profile表中特征类型为user时,fv值为null,标识该日该用户的pv、sv、impr、click合计
+create table profile(uid string,fv string,pv int,sv int,impr int,click int) partitioned by(day string,ft string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+=====================中间结果表   end=================================
+
+词频（TF）=某关键词出现次数/文章中关键词总数
+逆文档频率（IDF）=log（语料库文档总数/（包含该词的文档数+1））
+
+ 
+ 

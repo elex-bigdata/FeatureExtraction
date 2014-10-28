@@ -78,9 +78,9 @@ public class HiveOperator {
 		return result;
 	}
 	
-	public static void export(String dist,String sql) throws SQLException{
-		String hql = "INSERT OVERWRITE DIRECTORY '"+dist+"' row format delimited fields terminated by ',' stored as textfile";
-		executeHQL(hql+" "+sql);
+	public static void exportHdfs(String dist,String sql) throws SQLException{
+		String hql = "INSERT OVERWRITE DIRECTORY '"+dist+"' "+sql;
+		executeHQL(hql);
 	}
 
 }

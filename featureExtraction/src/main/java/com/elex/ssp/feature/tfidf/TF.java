@@ -12,6 +12,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
@@ -83,15 +84,15 @@ public class TF extends Configured implements Tool{
 	
 	public static void prepareInput(String uri) throws SQLException{
 		String day = Constants.getStartDay();
-		String sql = "select uid,CONCAT_WS(' ',collect_set(query)) from qeury_en where day <'"+day+"' group by uid";
+		String sql = "select uid,CONCAT_WS(' ',collect_set(query)) from qeury_en where day >'"+day+"' group by uid";
 		System.out.println("=================TF-,nation-sql===================");
 		System.out.println(sql);
 		System.out.println("=================TF-,nation-sql===================");
-		HiveOperator.export(uri, sql);		
+		HiveOperator.exportHdfs(uri, sql);		
 	}
 	
 	
-	public static class MyMapper extends Mapper<Text, Text, Text, Text> {
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text> {
 		
 		
 		private Map<String,Integer> user = new HashMap<String,Integer>();
@@ -102,6 +103,7 @@ public class TF extends Configured implements Tool{
 		private MultipleOutputs<Text, Text> tf;  
 		private Text nKey = new Text();
 		private Text nValue = new Text();
+		private String[] kv;
 		
 		@Override
 		protected void setup(Context context) throws IOException,InterruptedException {
@@ -109,23 +111,27 @@ public class TF extends Configured implements Tool{
 		}
 		
 		@Override
-		protected void map(Text key, Text value,Context context)
+		protected void map(LongWritable key, Text value,Context context)
 				throws IOException, InterruptedException {
-			wc = 0;
-			user.clear();
-			for(String word :WordSeder.sed(value.toString())){
-				user.put(word, user.get(word)==null?1:user.get(word)+1);
-				wc++;
+			kv = value.toString().split("\\x01");
+			if(kv.length==2){
+				wc = 0;
+				user.clear();
+				for(String word :WordSeder.sed(kv[1])){
+					user.put(word, user.get(word)==null?1:user.get(word)+1);
+					wc++;
+				}
+				
+				ite = user.entrySet().iterator();
+				while(ite.hasNext()){
+					entry = ite.next();
+					nKey.set(kv[0]+","+entry.getKey());
+					nValue.set(entry.getValue()+","+df.format(entry.getValue()/wc));
+					tf.write(nKey, nValue, "tf");
+					context.write(new Text(entry.getKey()), new Text("1"));
+				}
 			}
 			
-			ite = user.entrySet().iterator();
-			while(ite.hasNext()){
-				entry = ite.next();
-				nKey.set(key.toString()+","+entry.getKey());
-				nValue.set(entry.getValue()+","+df.format(entry.getValue()/wc));
-				tf.write(nKey, nValue, "tf");
-				context.write(new Text(entry.getKey()), new Text("1"));
-			}
 						
 			
 		}
