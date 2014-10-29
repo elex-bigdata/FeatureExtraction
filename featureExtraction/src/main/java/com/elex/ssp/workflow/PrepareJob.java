@@ -26,8 +26,8 @@ public class PrepareJob extends Job{
 	@Override	
 	public int doJob(String day) throws SQLException{
 		int result = 0;
-		result += logMerge(day);
-		result += queryEnCollect(day);
+		result += PrepareJob.logMerge(day);
+		result += PrepareJob.queryEnCollect(day);
 		return result;
 	}
 	

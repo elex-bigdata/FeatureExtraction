@@ -28,15 +28,15 @@ public class UserProfileDayProcessJob extends Job{
 	
 	public int doJob(String day) throws SQLException{
 		int result = 0;
-		result += timeFeature(day);
-		result += IPFeature(day);
-		result += browserFeature(day);
-		result += userFeature(day);
-		result += projectFeature(day);
-		result += queryFeature(day);
-		result += queryLengthFeature(day);
-		result += queryWordCountFeature(day);
-		result += keywordFeature(day);
+		result += UserProfileDayProcessJob.timeFeature(day);
+		result += UserProfileDayProcessJob.IPFeature(day);
+		result += UserProfileDayProcessJob.browserFeature(day);
+		result += UserProfileDayProcessJob.userFeature(day);
+		result += UserProfileDayProcessJob.projectFeature(day);
+		result += UserProfileDayProcessJob.queryFeature(day);
+		result += UserProfileDayProcessJob.queryLengthFeature(day);
+		result += UserProfileDayProcessJob.queryWordCountFeature(day);
+		result += UserProfileDayProcessJob.keywordFeature(day);
 		return result;
 	}
 	

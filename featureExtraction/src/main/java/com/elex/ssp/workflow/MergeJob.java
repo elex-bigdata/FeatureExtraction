@@ -19,8 +19,8 @@ public class MergeJob {
 	
 	public static int doJob() throws SQLException{
 		int result = 0;
-		result += featureMerge();
-		result += profileMerge();
+		result += MergeJob.featureMerge();
+		result += MergeJob.profileMerge();
 		return result;
 	}
 	

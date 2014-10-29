@@ -28,15 +28,15 @@ public class FeatureDayProcessJob extends Job {
 	
 	public int doJob(String day) throws SQLException{
 		int result = 0;
-		result += timeFeature(day);
-		result += IPFeature(day);
-		result += browserFeature(day);
-		result += userFeature(day);
-		result += projectFeature(day);
-		result += queryFeature(day);
-		result += queryLengthFeature(day);
-		result += queryWordCountFeature(day);
-		result += keywordFeature(day);
+		result += FeatureDayProcessJob.timeFeature(day);
+		result += FeatureDayProcessJob.IPFeature(day);
+		result += FeatureDayProcessJob.browserFeature(day);
+		result += FeatureDayProcessJob.userFeature(day);
+		result += FeatureDayProcessJob.projectFeature(day);
+		result += FeatureDayProcessJob.queryFeature(day);
+		result += FeatureDayProcessJob.queryLengthFeature(day);
+		result += FeatureDayProcessJob.queryWordCountFeature(day);
+		result += FeatureDayProcessJob.keywordFeature(day);
 		return result;
 	}
 	
