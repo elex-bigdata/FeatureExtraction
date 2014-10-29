@@ -87,7 +87,7 @@ public class IDF extends Configured implements Tool {
 	}
 	
 	public static void loadResultToHive(Path path) throws SQLException{
-		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE+")";
+		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE;
 		HiveOperator.loadDataToHiveTable(hql);
 		
 	}

@@ -39,7 +39,7 @@ create table log_merge(reqid string,uid string,pid string,ip string,nation strin
 insert overwrite table log_merge partition(day='20141022')
  SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,a.pv,b.adid,b.impr,b.time,c.click,d.q,d.sv FROM (SELECT reqid,adid,MAX(time)as time,COUNT(uid) AS impr FROM ad_impression WHERE DAY='20141022' GROUP BY reqid,adid)b LEFT OUTER JOIN (SELECT reqid,MAX(uid) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,COUNT(1) AS pv FROM nav_visit WHERE DAY = '20141022' GROUP BY reqid )a ON a.reqid=b.reqid LEFT OUTER JOIN (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='20141022' GROUP BY reqid)c ON c.reqid=b.reqid LEFT OUTER JOIN (SELECT reqid,CONCAT_WS(':',collect_set(qn(keyword))) AS q,COUNT(uid) AS sv FROM search WHERE DAY='20141022' GROUP BY reqid)d ON d.reqid=b.reqid
 
-#英语国家搜索日志
+#英语国家搜索日志表
 create table query_en(reqid string,uid string,pid string,query string,nation string,adid string,pv int,impr int,sv int,click int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 
 #产生英语国家搜索日志
@@ -56,11 +56,35 @@ create table tfidf(uid string,word string,wc int,tf double,idf double,tfidf doub
 #fv(特征值),ft(特征类型),nv(nav_visit_count),sv(search_count),impr(广告展示量),click(广告点击量)
 create table feature(fv string,nation string,adid string,pv int,sv int,impr int,click int) partitioned by(day string,ft string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 #profile表中特征类型为user时,fv值为null,标识该日该用户的pv、sv、impr、click合计
-create table profile(uid string,fv string,pv int,sv int,impr int,click int) partitioned by(day string,ft string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+create table profile(uid string,fv string,nation string,pv int,sv int,impr int,click int) partitioned by(day string,ft string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 =====================中间结果表   end=================================
 
 词频（TF）=某关键词出现次数/文章中关键词总数
 逆文档频率（IDF）=log（语料库文档总数/（包含该词的文档数+1））
 
  
+==============================每日处理========================
+#时间维度
+add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION tf as 'com.elex.ssp.udf.TimeDim';
+insert overwrite table feature partition(day='20141022',ft='time') 
+ select tab.col1,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) from log_merge lateral view tf(time,nation) tab as col1 
+ where day ='20141022' and time is not null and nation is not null  group by tab.col1,nation,adid
+ 
+#地区维度
+CREATE TEMPORARY FUNCTION area AS 'com.elex.ssp.udf.IPDim'
+insert overwrite table feature partition(day='20141022',ft='area') 
+ select area(ip) as a,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) from log_merge  
+ where day ='20141022' and ip is not null  group by a,nation,adid 
+==============================每日处理========================
+
+==============================feature合并表========================
+create table feature_merge(ft string,fv string,nation string,adid string,pv int,sv int,impr int,click int,ctr1 double,ctr2 double,ad_fill double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+==============================feature合并表========================
+
+====================profile合并表======================
+create table profile_merge(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+====================profile合并表=======================
+
+
  

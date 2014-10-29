@@ -48,7 +48,7 @@ insert overwrite table query_en partition(day='20141022')
  select reqid,uid,pid,tab.col1,nation,adid,pv,impr,sv,click from log_merge lateral view qs(query,':') tab as col1 where day ='20141022' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null;
 
 #关键词的tfidf表
-create table tfidf(uid string,word string,wc int,tf double,idf double,tfidf double)partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+create table tfidf(uid string,word string,wc int,tf double,idf double,tfidf double)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 
 ================================输入数据准备完成===================================
 
@@ -64,5 +64,12 @@ create table profile(uid string,fv string,pv int,sv int,impr int,click int) part
 词频（TF）=某关键词出现次数/文章中关键词总数
 逆文档频率（IDF）=log（语料库文档总数/（包含该词的文档数+1））
 
+
+====================每日处理sql======================
+#时间维度
+add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION tf as 'com.elex.ssp.udf.TimeDim'
+insert overwrite table feature partition(day='20141022',ft='time') 
+ select tab.col1,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) from log_merge lateral view tf(time,nation) tab as col1 where day ='20141022'  and time is not null and nation is not null group by tab.col1,nation,adid
  
  

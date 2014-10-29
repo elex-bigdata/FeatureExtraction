@@ -1,9 +1,12 @@
 package com.elex.ssp.common;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Vector;
 
 public class Constants {
 
@@ -39,4 +42,18 @@ public class Constants {
 		ca.add(Calendar.DATE, -1);
 		return sdf.format(ca.getTime());
 	}
+	
+	public static String[]  getBetweenDate(String d1,String d2) throws ParseException
+    {
+        Vector<String> v=new Vector<String>();
+        GregorianCalendar gc1=new GregorianCalendar(),gc2=new GregorianCalendar();
+        gc1.setTime(sdf.parse(d1));
+        gc2.setTime(sdf.parse(d2));
+        do{
+            GregorianCalendar gc3=(GregorianCalendar)gc1.clone();
+            v.add(sdf.format(gc3.getTime()));
+            gc1.add(Calendar.DAY_OF_MONTH, 1);             
+         }while(!gc1.after(gc2));
+        return v.toArray(new String[v.size()]);
+    } 
 }
