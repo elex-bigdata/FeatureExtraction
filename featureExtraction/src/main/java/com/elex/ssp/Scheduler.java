@@ -104,8 +104,14 @@ public class Scheduler {
 		String logMerge ="create table IF NOT EXISTS log_merge(reqid string,uid string,pid string,ip string,nation string,ua string,os string,width string,height string,pv int,adid string,impr int,time string,click int,query string,sv int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";		
 		stmt.execute(logMerge);
 		
+		String logMerge2="CREATE TABLE IF NOT EXISTS log_merge2 (reqid STRING,time STRING,uid STRING,pid STRING,ip STRING,nation STRING,ua STRING,os STRING,width STRING,height STRING,pv INT,impr INT,click INT,sv INT) partitioned BY (DAY STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored AS textfile ";
+		stmt.execute(logMerge2);
+		
 		String queryEn = "create table IF NOT EXISTS query_en(reqid string,uid string,query string,nation string,adid string,pv int,impr int,sv int,click int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(queryEn);
+		
+		String queryEn2 = "create table IF NOT EXISTS query_en2(reqid string,uid string,query string,nation string,pv int,impr int,sv int,click int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
+		stmt.execute(queryEn2);
 		
 		String tfidf="create table IF NOT EXISTS tfidf(uid string,word string,wc int,tf double,idf double,tfidf double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(tfidf);
@@ -119,7 +125,7 @@ public class Scheduler {
 		String featureMerge ="create table IF NOT EXISTS feature_merge(ft string,fv string,nation string,adid string,pv int,sv int,impr int,click int,ctr1 double,ctr2 double,ad_fill double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(featureMerge);
 		
-		String profileMerge ="create table IF NOT EXISTS profile_merge(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int,tfidf double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
+		String profileMerge ="create table IF NOT EXISTS profile_merge(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(profileMerge);
 		
 		stmt.close();

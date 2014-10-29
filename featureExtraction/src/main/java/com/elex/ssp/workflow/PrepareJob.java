@@ -27,7 +27,10 @@ public class PrepareJob extends Job{
 	public int doJob(String day) throws SQLException{
 		int result = 0;
 		result += PrepareJob.logMerge(day);
+		result += logMerge2(day);
 		result += PrepareJob.queryEnCollect(day);
+		result += queryEnCollect2(day);
+		
 		return result;
 	}
 	
@@ -51,14 +54,42 @@ public class PrepareJob extends Job{
 		return 0;
 	}
 	
+	public static int logMerge2(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		String hql = "insert overwrite table log_merge2 partition(day='"+day+"') " +
+				"select reqid,max(time),uid,max(pid),max(ip),max(nation),max(ua),max(os),max(width),max(height),max(pv),sum(impr),max(click),max(sv) " +
+				"from log_merge where day ='"+day+"' and uid is not null group by reqid,uid";
+		stmt.execute(hql);
+		stmt.close();
+		return 0;		
+	}
+	
 	public static int queryEnCollect(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en partition(day='"+day+"') ";
-		String hql = preHql+" select reqid,uid,tab.col1,nation,adid,pv,impr,sv,click from log_merge lateral view qs(query,':') tab as col1 " +
+		String hql = preHql+" select reqid,uid,tab.col1,nation,adid,pv,impr,1,click from log_merge lateral view qs(query,':') tab as col1 " +
 				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null and nation is not null and uid is not null";
+		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
+		System.out.println(hql);
+		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
+	}
+	
+	public static int queryEnCollect2(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
+		String preHql = " insert overwrite table query_en2 partition(day='"+day+"') ";
+		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),sum(impr),max(sv),max(click) from log_merge lateral view qs(query,':') tab as col1 " +
+				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null and nation is not null and uid is not null " +
+						"group by reqid,uid,tab.col1,nation";
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
 		System.out.println(hql);
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");

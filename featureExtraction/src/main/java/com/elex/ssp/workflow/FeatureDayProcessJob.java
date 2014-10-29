@@ -65,10 +65,10 @@ public class FeatureDayProcessJob extends Job {
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION area AS 'com.elex.ssp.udf.IPDim'");
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='area') ";
-		String hql = preHql+" select area(ip) as a,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = preHql+" select area(ip),nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from log_merge " +
 				"where day ='"+day+"' and ip is not null and nation is not null and adid is not null " +
-				" group by a,nation,adid";
+				" group by area(ip),nation,adid";
 		System.out.println("==================DayProcess-IPFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-IPFeature-sql==================");
@@ -131,10 +131,10 @@ public class FeatureDayProcessJob extends Job {
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query'");
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query') ";
-		String hql = preHql+" select qn(query) as q,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = preHql+" select qn(query),nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
 				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
-				" group by q,nation,adid";
+				" group by qn(query),nation,adid";
 		System.out.println("==================DayProcess-queryFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-queryFeature-sql==================");
@@ -149,10 +149,10 @@ public class FeatureDayProcessJob extends Job {
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION ql AS 'com.elex.ssp.udf.QueryLength'");
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_length') ";
-		String hql = preHql+" select ql(query) as ql,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = preHql+" select ql(query),nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
 				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
-				" group by ql,nation,adid";
+				" group by ql(query),nation,adid";
 		System.out.println("==================DayProcess-queryLengthFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-queryLengthFeature-sql==================");
@@ -167,10 +167,10 @@ public class FeatureDayProcessJob extends Job {
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION wc AS 'com.elex.ssp.udf.WordCount'");
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_word_count') ";
-		String hql = preHql+" select wc(query) as wc,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = preHql+" select wc(query),nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
 				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
-				" group by wc,nation,adid";
+				" group by wc(query),nation,adid";
 		System.out.println("==================DayProcess-queryWordCountFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-queryWordCountFeature-sql==================");

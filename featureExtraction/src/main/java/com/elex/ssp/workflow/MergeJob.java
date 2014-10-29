@@ -43,7 +43,8 @@ public class MergeJob {
 	public static int profileMerge() throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
-		String preHql = "insert overwrite table profile_merge ";
+		
+		/*String preHql = "insert overwrite table profile_merge ";
 		String kwSql = preHql+" select a.*,b.tfidf from (select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
 				" where day >'"+Constants.getStartDay()+"' and fv is not null and ft='keyword' " +
@@ -51,15 +52,15 @@ public class MergeJob {
 		System.out.println("==================profileMerge-keyword-sql==================");
 		System.out.println(kwSql);
 		System.out.println("==================profileMerge-keyword-sql==================");
-		stmt.execute(kwSql);
+		stmt.execute(kwSql);*/
 		
-		String hql = "insert into table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click),0 " +
+		String hql = "insert into table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
-				" where day >'"+Constants.getStartDay()+"' and fv is not null and ft !='keyword' " +
+				" where day >'"+Constants.getStartDay()+"' and fv is not null " +
 				" group ft,fv,nation";
-		System.out.println("==================profileMerge-notkeyword-sql==================");
+		System.out.println("==================profileMerge-sql==================");
 		System.out.println(hql);
-		System.out.println("==================profileMerge-notkeyword-sql==================");
+		System.out.println("==================profileMerge-sql==================");
 		stmt.execute(hql);
 		
 		stmt.close();
