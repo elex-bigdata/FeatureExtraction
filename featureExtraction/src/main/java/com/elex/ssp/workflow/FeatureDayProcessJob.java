@@ -166,7 +166,7 @@ public class FeatureDayProcessJob extends Job {
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION wc AS 'com.elex.ssp.udf.WordCount'");
-		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_length') ";
+		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_word_count') ";
 		String hql = preHql+" select wc(query) as wc,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
 				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
@@ -184,7 +184,7 @@ public class FeatureDayProcessJob extends Job {
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord'");
-		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_length') ";
+		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='keyword') ";
 		String hql = preHql+" select tab.col1 as keyword,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en lateral view sed(query) tab as col1 " +
 				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +

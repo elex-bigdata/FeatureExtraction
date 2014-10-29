@@ -56,4 +56,12 @@ public class Constants {
          }while(!gc1.after(gc2));
         return v.toArray(new String[v.size()]);
     } 
+	
+	public static void main(String[] args) throws ParseException{
+		for(String a:getBetweenDate("20140918","20141028")){
+			System.out.println(a);
+		}
+		
+		System.out.println(getYestoday());
+	}
 }
