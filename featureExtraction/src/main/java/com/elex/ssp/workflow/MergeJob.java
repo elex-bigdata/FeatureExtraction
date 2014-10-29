@@ -7,15 +7,21 @@ import java.sql.Statement;
 import com.elex.ssp.common.Constants;
 import com.elex.ssp.common.HiveOperator;
 
-public class Merge {
+public class MergeJob {
 
 	/**
 	 * @param args
 	 * @throws SQLException 
 	 */
 	public static void main(String[] args) throws SQLException {
-		featureMerge();
-		profileMerge();
+		doJob();
+	}
+	
+	public static int doJob() throws SQLException{
+		int result = 0;
+		result += featureMerge();
+		result += profileMerge();
+		return result;
 	}
 	
 	public static int featureMerge() throws SQLException{

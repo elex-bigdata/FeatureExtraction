@@ -38,6 +38,17 @@ public class PropertiesUtils {
 	public static String getHiveUser() {
 		return pop.getProperty("hive.user");
 	}
+	public static String getBeginDay() {
+
+		return pop.getProperty("init.beginday");
+	}
+	public static String getEndDay() {
+		return pop.getProperty("init.endday");
+	}
+	public static boolean getIsInit() {
+		
+		return pop.getProperty("init").equals("true")?true:false;
+	}
 		
 
 	

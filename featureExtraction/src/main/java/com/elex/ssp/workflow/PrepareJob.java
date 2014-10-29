@@ -4,36 +4,33 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.util.ToolRunner;
-
 import com.elex.ssp.common.Constants;
 import com.elex.ssp.common.HiveOperator;
-import com.elex.ssp.feature.tfidf.IDF;
-import com.elex.ssp.feature.tfidf.TF;
+import com.elex.ssp.common.PropertiesUtils;
 
 
-public class PrepareJob {
+public class PrepareJob extends Job{
 
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+		boolean isInit = PropertiesUtils.getIsInit();
+		PrepareJob job = new PrepareJob();
+		job.process(isInit);
 		
 		
 	}
 	
-	public static int prepare(boolean isInit,String day) throws SQLException{
-		
-		String yestoday = Constants.getYestoday();
-		if(isInit){
-			
-		}
-		int result = logMerge(day);
+	@Override	
+	public int doJob(String day) throws SQLException{
+		int result = 0;
+		result += logMerge(day);
 		result += queryEnCollect(day);
 		return result;
 	}
+	
 
 	public static int logMerge(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
