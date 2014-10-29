@@ -38,7 +38,7 @@ public class PrepareJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query'");
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
-		String navHql = " (SELECT reqid,MAX(uid) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,COUNT(1) AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
+		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,COUNT(1) AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
 		String imprHql = " (SELECT reqid,adid,MAX(time)as time,COUNT(uid) AS impr FROM ad_impression WHERE DAY='"+day+"' GROUP BY reqid,adid)b ";
 		String clickHql = " (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='"+day+"' GROUP BY reqid)c ";
 		String searchHql = " (SELECT reqid,CONCAT_WS(':',collect_set(qn(keyword))) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
@@ -57,8 +57,8 @@ public class PrepareJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en partition(day='"+day+"') ";
-		String hql = preHql+" select reqid,uid,pid,tab.col1,nation,adid,pv,impr,sv,click from log_merge lateral view qs(query,':') tab as col1 " +
-				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null";
+		String hql = preHql+" select reqid,uid,tab.col1,nation,adid,pv,impr,sv,click from log_merge lateral view qs(query,':') tab as col1 " +
+				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null and nation is not null and uid is not null";
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
 		System.out.println(hql);
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");

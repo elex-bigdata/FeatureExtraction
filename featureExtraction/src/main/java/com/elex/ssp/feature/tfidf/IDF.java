@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -145,7 +147,6 @@ public class IDF extends Configured implements Tool {
 				wc = Integer.parseInt(kv[2]);
 				tf = Double.parseDouble(kv[3]);
 				idf = Math.log(Double.valueOf(new Double(docs) / new Double(words.get(word)==null?1:words.get(word)+1)));
-				tfidf = tf * idf;
 				context.write(new Text(uid),new Text(word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)));
 			}									
 		}
@@ -154,14 +155,50 @@ public class IDF extends Configured implements Tool {
 	
 	public static class MyReducer extends Reducer<Text, Text, Text, Text> {
 		
+		double sum = 0D;
+		Map<String,KeyWord> words = new HashMap<String,KeyWord>();
+		double tf,idf,tfidf;
+		String[] kv;
+		String uid,word;
+		int wc;
+		KeyWord kw;
+		Iterator<Entry<String, KeyWord>> ite;
+		Entry<String, KeyWord> entry;
+		DecimalFormat df = Constants.df;
+		
 		@Override
 		protected void reduce(Text key, Iterable<Text> values,Context context)
 				throws IOException, InterruptedException {
+			sum=0;
+			words.clear();
+			word = key.toString();
+			uid = key.toString();
 			for(Text v:values){
-				context.write(null, new Text(key.toString()+","+v.toString()));
+				kv = v.toString().split(",");
+				if(kv.length==5){
+					word = kv[0];
+					wc = Integer.parseInt(kv[1]);
+					tf = Double.parseDouble(kv[2]);
+					idf = Double.parseDouble(kv[3]);
+					tfidf = Double.parseDouble(kv[4]);
+					kw = new KeyWord(word,wc,tf,idf,tfidf);
+					sum += tfidf;
+					words.put(word, kw);
+				}				
 			}
 			
+			ite= words.entrySet().iterator();
+			
+			while(ite.hasNext()){
+				entry = ite.next();
+				context.write(new Text(uid+","+entry.getValue().getWord()+","+entry.getValue().getWc()+","+df.format(entry.getValue().getTf())
+						+","+df.format(entry.getValue().getIdf())+","+df.format(entry.getValue().getTfidf()/sum)), null);
+			}
+			
+			
+			
 		}
+		
 				
 	}
 

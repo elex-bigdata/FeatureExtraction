@@ -48,7 +48,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='time') ";
 		String hql = preHql+" select uid,tab.col1,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from log_merge lateral view tf(time,nation) tab as col1 " +
-				"where day ='"+day+"' and time is not null and nation is not null and uid is not null" +
+				"where day ='"+day+"' and time is not null and nation is not null and uid is not null " +
 				" group by uid,tab.col1,nation";
 		System.out.println("==================DayProcess-timeFeature-sql==================");
 		System.out.println(hql);
@@ -83,7 +83,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='browser') ";
 		String hql = preHql+" select uid,ua,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from log_merge " +
-				"where day ='"+day+"' and ua is not null and uid is not null and nation is not null" +
+				"where day ='"+day+"' and ua is not null and uid is not null and nation is not null " +
 				" group by uid,ua,nation";
 		System.out.println("==================DayProcess-browserFeature-sql==================");
 		System.out.println(hql);
@@ -97,10 +97,10 @@ public class UserProfileDayProcessJob extends Job{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='user') ";
-		String hql = preHql+" select uid,'u',nation,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = preHql+" select uid,uid,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from log_merge " +
 				"where day ='"+day+"' and uid is not null and nation is not null" +
-				" group by uid,'u',nation";
+				" group by uid,nation";
 		System.out.println("==================DayProcess-userFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-userFeature-sql==================");
@@ -115,7 +115,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='project') ";
 		String hql = preHql+" select uid,pid,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from log_merge " +
-				"where day ='"+day+"' and pid is not null and uid is not null and nation is not null" +
+				"where day ='"+day+"' and pid is not null and uid is not null and nation is not null " +
 				" group by uid,pid,nation";
 		System.out.println("==================DayProcess-userFeature-sql==================");
 		System.out.println(hql);
@@ -133,7 +133,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='query') ";
 		String hql = preHql+" select uid,qn(query) as q,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
-				"where day ='"+day+"' and query is not null and uid is not null and nation is not null" +
+				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group by uid,q,nation";
 		System.out.println("==================DayProcess-queryFeature-sql==================");
 		System.out.println(hql);
@@ -151,7 +151,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='query_length') ";
 		String hql = preHql+" select uid,ql(query) as ql,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
-				"where day ='"+day+"' and query is not null and uid is not null and nation is not null" +
+				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group by uid,ql,nation";
 		System.out.println("==================DayProcess-queryLengthFeature-sql==================");
 		System.out.println(hql);
@@ -169,7 +169,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='query_length') ";
 		String hql = preHql+" select uid,wc(query) as wc,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en " +
-				"where day ='"+day+"' and query is not null and uid is not null and nation is not null" +
+				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group by uid,wc,nation";
 		System.out.println("==================DayProcess-queryWordCountFeature-sql==================");
 		System.out.println(hql);
@@ -187,7 +187,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='query_length') ";
 		String hql = preHql+" select uid,tab.col1 as keyword,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from query_en lateral view sed(query) tab as col1 " +
-				"where day ='"+day+"' and query is not null and uid is not null and nation is not null" +
+				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group uid,keyword,nation";
 		System.out.println("==================DayProcess-keywordFeature-sql==================");
 		System.out.println(hql);

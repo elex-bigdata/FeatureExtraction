@@ -1,5 +1,7 @@
 git clone https://github.com/elex-bigdata/feudf.git
 
+https://github.com/elex-bigdata/FeatureExtraction.git
+
 add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
 
 CREATE TEMPORARY FUNCTION area AS 'com.elex.ssp.udf.IPDim';

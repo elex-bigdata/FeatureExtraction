@@ -82,5 +82,11 @@ public class HiveOperator {
 		String hql = "INSERT OVERWRITE DIRECTORY '"+dist+"' "+sql;
 		executeHQL(hql);
 	}
+	
+	public static void closeConn() throws SQLException{
+		HiveOperator.getHiveConnection().commit();
+		HiveOperator.getHiveConnection().close();
+		
+	}
 
 }
