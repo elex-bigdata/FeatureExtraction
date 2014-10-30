@@ -50,9 +50,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from log_merge2 lateral view tf(time,nation) tab as col1 " +
 				"where day ='"+day+"' and time is not null and nation is not null and uid is not null " +
 				" group by uid,tab.col1,nation";
-		System.out.println("==================DayProcess-timeFeature-sql==================");
+		System.out.println("==================profileDayProcess-timeFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-timeFeature-sql==================");
+		System.out.println("==================profileDayProcess-timeFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -69,9 +69,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from log_merge2 " +
 				"where day ='"+day+"' and ip is not null and uid is not null and nation is not null" +
 				" group by uid,area(ip),nation";
-		System.out.println("==================DayProcess-IPFeature-sql==================");
+		System.out.println("==================profileDayProcess-IPFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-IPFeature-sql==================");
+		System.out.println("==================profileDayProcess-IPFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -85,9 +85,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from log_merge2 " +
 				"where day ='"+day+"' and ua is not null and uid is not null and nation is not null " +
 				" group by uid,ua,nation";
-		System.out.println("==================DayProcess-browserFeature-sql==================");
+		System.out.println("==================profileDayProcess-browserFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-browserFeature-sql==================");
+		System.out.println("==================profileDayProcess-browserFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -101,9 +101,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from log_merge2 " +
 				"where day ='"+day+"' and uid is not null and nation is not null" +
 				" group by uid,uid,nation";
-		System.out.println("==================DayProcess-userFeature-sql==================");
+		System.out.println("==================profileDayProcess-userFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-userFeature-sql==================");
+		System.out.println("==================profileDayProcess-userFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -117,9 +117,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from log_merge2 " +
 				"where day ='"+day+"' and pid is not null and uid is not null and nation is not null " +
 				" group by uid,pid,nation";
-		System.out.println("==================DayProcess-userFeature-sql==================");
+		System.out.println("==================profileDayProcess-projectFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-userFeature-sql==================");
+		System.out.println("==================profileDayProcess-projectFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -135,9 +135,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from query_en2 " +
 				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group by uid,qn(query),nation";
-		System.out.println("==================DayProcess-queryFeature-sql==================");
+		System.out.println("==================profileDayProcess-queryFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-queryFeature-sql==================");
+		System.out.println("==================profileDayProcess-queryFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -153,9 +153,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from query_en2 " +
 				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group by uid,ql(query),nation";
-		System.out.println("==================DayProcess-queryLengthFeature-sql==================");
+		System.out.println("==================profileDayProcess-queryLengthFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-queryLengthFeature-sql==================");
+		System.out.println("==================profileDayProcess-queryLengthFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -171,9 +171,9 @@ public class UserProfileDayProcessJob extends Job{
 				"from query_en2 " +
 				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
 				" group by uid,wc(query),nation";
-		System.out.println("==================DayProcess-queryWordCountFeature-sql==================");
+		System.out.println("==================profileDayProcess-queryWordCountFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-queryWordCountFeature-sql==================");
+		System.out.println("==================profileDayProcess-queryWordCountFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -185,13 +185,12 @@ public class UserProfileDayProcessJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord'");
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='keyword') ";
-		String hql = preHql+" select uid,tab.col1 as keyword,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
-				"from query_en2 lateral view sed(query) tab as col1 " +
-				"where day ='"+day+"' and query is not null and uid is not null and nation is not null " +
-				" group uid,keyword,nation";
-		System.out.println("==================DayProcess-keywordFeature-sql==================");
+		String hql = preHql+" select uid,k.keyword,k.nation,sum(pv),sum(sv),sum(impr),sum(click) from " +
+				"(select uid,tab.col1 as keyword,nation,pv,sv,impr,click from query_en2 lateral view sed(query) tab as col1 " +
+				"where day ='"+day+"' and query is not null and uid is not null and nation is not null)k group by k.uid,k.keyword,k.nation";
+		System.out.println("==================profileDayProcess-keywordFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-keywordFeature-sql==================");
+		System.out.println("==================profileDayProcess-keywordFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;

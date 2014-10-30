@@ -40,7 +40,7 @@ public class PrepareJob extends Job{
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query'");
-		stmt.execute("CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon';");
+		stmt.execute("CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon'");
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
 		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
 		String imprHql = " (SELECT reqid,adid,MAX(time)as time,1 AS impr FROM ad_impression WHERE DAY='"+day+"' GROUP BY reqid,adid)b ";
@@ -91,7 +91,7 @@ public class PrepareJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en2 partition(day='"+day+"') ";
-		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),sum(impr),1,max(click) from log_merge lateral view qs(query,':') tab as col1 " +
+		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),count(distinct adid),1,max(click) from log_merge lateral view qs(query,':') tab as col1 " +
 				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null and nation is not null and uid is not null " +
 						"group by reqid,uid,tab.col1,nation";
 		System.out.println("==================PrepareJob-queryEnCollect2-sql==================");

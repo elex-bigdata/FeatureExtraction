@@ -117,9 +117,9 @@ public class FeatureDayProcessJob extends Job {
 				"from log_merge " +
 				"where day ='"+day+"' and pid is not null and nation is not null and adid is not null " +
 				" group by pid,nation,adid";
-		System.out.println("==================DayProcess-userFeature-sql==================");
+		System.out.println("==================DayProcess-projectFeature-sql==================");
 		System.out.println(hql);
-		System.out.println("==================DayProcess-userFeature-sql==================");
+		System.out.println("==================DayProcess-projectFeature-sql==================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
@@ -185,10 +185,9 @@ public class FeatureDayProcessJob extends Job {
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord'");
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='keyword') ";
-		String hql = preHql+" select tab.col1 as keyword,nation,adid,sum(pv),sum(sv),sum(impr),sum(click) " +
-				"from query_en lateral view sed(query) tab as col1 " +
-				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
-				" group keyword,nation,adid";
+		String hql = preHql+" select k.keyword,k.nation,k.adid,sum(pv),sum(sv),sum(impr),sum(click) from " +
+				"(select tab.col1 as keyword,nation,adid,pv,sv,impr,click from query_en lateral view sed(query) tab as col1 " +
+				"where day ='"+day+"' and query is not null and nation is not null and adid is not null)k group by k.keyword,k.nation,k.adid";
 		System.out.println("==================DayProcess-keywordFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-keywordFeature-sql==================");
