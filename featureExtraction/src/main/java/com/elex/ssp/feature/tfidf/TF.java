@@ -1,7 +1,9 @@
 package com.elex.ssp.feature.tfidf;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -83,12 +85,18 @@ public class TF extends Configured implements Tool{
 	}
 	
 	public static void prepareInput(String uri) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace';");
 		String day = Constants.getStartDay();
-		String sql = "select uid,CONCAT_WS(' ',collect_set(query)) from query_en where day >'"+day+"' group by uid";
+		String sql = "select uid,concatspace(query) from query_en where day >'"+day+"' group by uid";
+		String hql = "INSERT OVERWRITE DIRECTORY '"+uri+"' "+sql;
 		System.out.println("=================TF-prepareInput-sql===================");
-		System.out.println(sql);
+		System.out.println(hql);
 		System.out.println("=================TF-prepareInput-sql===================");
-		HiveOperator.exportHdfs(uri, sql);		
+		stmt.execute(hql);
+		stmt.close();
 	}
 	
 	
