@@ -185,7 +185,7 @@ public class UserProfileDayProcessJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord'");
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='keyword') ";
-		String hql = preHql+" select uid,k.keyword,k.nation,sum(pv),sum(sv),sum(impr),sum(click) from " +
+		String hql = preHql+" select k.uid,k.keyword,k.nation,sum(pv),sum(sv),sum(impr),sum(click) from " +
 				"(select uid,tab.col1 as keyword,nation,pv,sv,impr,click from query_en2 lateral view sed(query) tab as col1 " +
 				"where day ='"+day+"' and query is not null and uid is not null and nation is not null)k group by k.uid,k.keyword,k.nation";
 		System.out.println("==================profileDayProcess-keywordFeature-sql==================");
