@@ -100,7 +100,7 @@ public class UserProfileDayProcessJob extends Job{
 		String hql = preHql+" select uid,uid,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				"from log_merge2 " +
 				"where day ='"+day+"' and uid is not null and nation is not null" +
-				" group by uid,uid,nation";
+				" group by uid,nation";
 		System.out.println("==================profileDayProcess-userFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================profileDayProcess-userFeature-sql==================");

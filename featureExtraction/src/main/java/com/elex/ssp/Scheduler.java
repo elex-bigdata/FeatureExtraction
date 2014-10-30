@@ -61,7 +61,7 @@ public class Scheduler {
 		// stage 2
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("day process !!!");
-			success = dayProcess();
+			success = featureDayProcess();
 			if (success != 0) {
 				log.error("day process ERROR!!!,SYSTEM EXIT!!!");
 				System.exit(success);
@@ -70,6 +70,18 @@ public class Scheduler {
 		}
 		
 		// stage 3
+		if (shouldRunNextPhase(stageArgs, currentPhase)) {
+			log.info("day process !!!");
+			success = profileDayProcess();
+			if (success != 0) {
+				log.error("day process ERROR!!!,SYSTEM EXIT!!!");
+				System.exit(success);
+			}
+			log.info("day process SUCCESS!!!");
+		}
+		
+		
+		// stage 4
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("tfidf !!!");
 			success = tfidf();
@@ -81,7 +93,7 @@ public class Scheduler {
 		}
 		
 		
-		// stage 4
+		// stage 5
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("merge !!!");
 			success = merge();
@@ -140,12 +152,23 @@ public class Scheduler {
 		
 	}
 	
-	public static int dayProcess() throws SQLException, ParseException{
+	public static int featureDayProcess() throws SQLException, ParseException{
 		int result =0;
 		boolean isInit = PropertiesUtils.getIsInit();
 		
 		FeatureDayProcessJob featureJob = new FeatureDayProcessJob();						
 		result += featureJob.process(isInit);
+		
+		UserProfileDayProcessJob profielJob = new UserProfileDayProcessJob();		
+		result += profielJob.process(isInit);
+		
+		return result;		
+		
+	}
+	
+	public static int profileDayProcess() throws SQLException, ParseException{
+		int result =0;
+		boolean isInit = PropertiesUtils.getIsInit();
 		
 		UserProfileDayProcessJob profielJob = new UserProfileDayProcessJob();		
 		result += profielJob.process(isInit);

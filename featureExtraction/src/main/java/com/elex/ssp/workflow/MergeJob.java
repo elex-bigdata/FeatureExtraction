@@ -57,7 +57,7 @@ public class MergeJob {
 		String hql = "insert into table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
 				" where day >'"+Constants.getStartDay()+"' and fv is not null " +
-				" group ft,fv,nation";
+				" group uid,ft,fv,nation";
 		System.out.println("==================profileMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================profileMerge-sql==================");
