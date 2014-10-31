@@ -49,6 +49,10 @@ public class PropertiesUtils {
 		
 		return pop.getProperty("init").equals("true")?true:false;
 	}
+	public static String getExpXmlPath() {
+		
+		return pop.getProperty("exp");
+	}
 		
 
 	

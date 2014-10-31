@@ -140,6 +140,9 @@ public class Scheduler {
 		String profileMerge ="create table IF NOT EXISTS profile_merge(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(profileMerge);
 		
+		String userMerge ="create table IF NOT EXISTS user_merge(uid string,nation string,adid string,pv int,impr int,sv int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
+		stmt.execute(userMerge);
+		
 		stmt.close();
 		return 0;
 	}

@@ -21,6 +21,7 @@ public class MergeJob {
 		int result = 0;
 		result += MergeJob.featureMerge();
 		result += MergeJob.profileMerge();
+		result += MergeJob.userMerge();
 		return result;
 	}
 	
@@ -66,6 +67,22 @@ public class MergeJob {
 		stmt.close();
 		return 0;
 		
+	}
+	
+	public static int userMerge() throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		String preHql = "insert overwrite table user_merge ";
+		String hql = preHql+" select fv,nation,adid,sum(pv),sum(impr),sum(sv),sum(click) " +
+				" from feature  " +
+				" where ft ='user' and fv is not null " +
+				" group fv,nation,adid";
+		System.out.println("==================userMerge-sql==================");
+		System.out.println(hql);
+		System.out.println("==================userMerge-sql==================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
 	}
 
 }
