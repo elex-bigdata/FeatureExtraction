@@ -29,10 +29,10 @@ public class MergeJob {
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		String preHql = "insert overwrite table feature_merge ";
-		String hql = preHql+" select ft,fv,nation,adid,sum(pv) as pvs,sum(sv) as svs,sum(impr) as ims,sum(click) as cs,round(cs/pvs,4),round(cs/ims,4),round(ims/pvs,4) " +
+		String hql = preHql+" select ft,fv,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),round(sum(click)/sum(pv),4),round(sum(click)/sum(impr),4),round(sum(impr)/sum(pv),4) " +
 				" from feature  " +
 				" where day >'"+Constants.getStartDay()+"' and fv is not null " +
-				" group ft,fv,nation,adid";
+				" group by ft,fv,nation,adid";
 		System.out.println("==================featureMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================featureMerge-sql==================");
@@ -58,7 +58,7 @@ public class MergeJob {
 		String hql = "insert into table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
 				" where day >'"+Constants.getStartDay()+"' and fv is not null " +
-				" group uid,ft,fv,nation";
+				" group by uid,ft,fv,nation";
 		System.out.println("==================profileMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================profileMerge-sql==================");
@@ -76,7 +76,7 @@ public class MergeJob {
 		String hql = preHql+" select fv,nation,adid,sum(pv),sum(impr),sum(sv),sum(click) " +
 				" from feature  " +
 				" where ft ='user' and fv is not null " +
-				" group fv,nation,adid";
+				" group by fv,nation,adid";
 		System.out.println("==================userMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================userMerge-sql==================");
