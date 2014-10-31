@@ -100,7 +100,7 @@ public class IDF extends Configured implements Tool {
 		private DecimalFormat df = Constants.df;
 		private String uid, word;
 		private int wc, docs;
-		private Double tf, idf, tfidf;
+		private Double tf, idf;
 		private String[] kv;
 
 		@Override
@@ -146,8 +146,8 @@ public class IDF extends Configured implements Tool {
 				word =kv[1];
 				wc = Integer.parseInt(kv[2]);
 				tf = Double.parseDouble(kv[3]);
-				idf = Math.log(Double.valueOf(new Double(docs) / new Double(words.get(word)==null?1:words.get(word)+1)));
-				context.write(new Text(uid),new Text(word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tfidf)));
+				idf = Math.log(new Double(docs) / new Double(words.get(word)==null?1:words.get(word)+1));
+				context.write(new Text(uid),new Text(word + "," + wc + "," + df.format(tf)+ "," + df.format(idf) + "," + df.format(tf*idf)));
 			}									
 		}
 

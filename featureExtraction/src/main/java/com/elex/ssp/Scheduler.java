@@ -60,24 +60,24 @@ public class Scheduler {
 		
 		// stage 2
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
-			log.info("day process !!!");
+			log.info("feature day process !!!");
 			success = featureDayProcess();
 			if (success != 0) {
-				log.error("day process ERROR!!!,SYSTEM EXIT!!!");
+				log.error("feature day process ERROR!!!,SYSTEM EXIT!!!");
 				System.exit(success);
 			}
-			log.info("day process SUCCESS!!!");
+			log.info("feature day process SUCCESS!!!");
 		}
 		
 		// stage 3
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
-			log.info("day process !!!");
+			log.info("profile day process !!!");
 			success = profileDayProcess();
 			if (success != 0) {
-				log.error("day process ERROR!!!,SYSTEM EXIT!!!");
+				log.error("profile day process ERROR!!!,SYSTEM EXIT!!!");
 				System.exit(success);
 			}
-			log.info("day process SUCCESS!!!");
+			log.info("profile day process SUCCESS!!!");
 		}
 		
 		

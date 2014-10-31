@@ -91,5 +91,18 @@ create table feature_merge(ft string,fv string,nation string,adid string,pv int,
 create table profile_merge(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 ====================profile合并表=======================
 
-
+=================结果按条件导出（示例语句）==========
+SELECT 
+  gid,
+  lang,
+  rate 
+FROM
+  hb_count 
+WHERE 
+  CASE
+    lang 
+    WHEN 'pt' 
+    THEN rate > 0.417 
+    ELSE rate > 0 
+  END 
  
