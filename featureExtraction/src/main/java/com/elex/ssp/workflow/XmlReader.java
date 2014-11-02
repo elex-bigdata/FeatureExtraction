@@ -1,4 +1,4 @@
-package com.elex.ssp.export;
+package com.elex.ssp.workflow;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,17 +50,19 @@ public class XmlReader {
 	public String getAttributeValue(String merge,String feature,String attr){
 		return XmlReader.getXmlReaderInstance().getRoot().element(merge)==null?
 				null:XmlReader.getXmlReaderInstance().getRoot().element(merge).element(feature)==null?
-						null:XmlReader.getXmlReaderInstance().getRoot().element(merge).element(feature).elementText(attr);
+						null:XmlReader.getXmlReaderInstance().getRoot().element(merge).element(feature).element(attr)==null?
+								null:XmlReader.getXmlReaderInstance().getRoot().element(merge).element(feature).element(attr).getText();
 	}
 	
-	public String[] getFeatureList(String merge){
+	public String[] getFeatureExceptList(String merge){
 		List<String> features = new ArrayList<String>();
 		Element e =XmlReader.getXmlReaderInstance().getRoot().element(merge);
 		if(e!=null){
 			for (Iterator i = e.elementIterator(); i.hasNext();) {
 	            Element node = (Element) i.next();
-	            
-	            features.add(node.getName());	           
+	            if(!node.getName().equals("all")){
+	            	features.add(node.getName());
+	            }            	           
 	        }
 		}
 		
@@ -84,6 +86,8 @@ public class XmlReader {
 		
 		return features.toArray(new String[features.size()]);
 	}
+	
+	
 
 
 	/**
@@ -92,12 +96,16 @@ public class XmlReader {
 	public static void main(String[] args) {
 		
 		XmlReader xr = XmlReader.getXmlReaderInstance();
+	
+		
 		//xr.parserXml();
 		
-		System.out.println(xr.getAttributeValue("profileMerge","time","pv"));
-		for(String f:xr.getAttrbutes("featureMerge","user")){
+		//System.out.println(xr.getAttributeValue("featureMerge", "query_length", "fv"));
+		System.out.println("15.23,6.85".matches("[\\d]+\\.[\\d]+\\,[\\d]+\\.[\\d]+"));
+		
+		/*for(String f:xr.getAttrbutes("featureMerge","user")){
 			System.out.println(f);
-		}
+		}*/
 		
 	}
 	

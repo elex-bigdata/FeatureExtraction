@@ -1,200 +1,217 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <export>
-    <featureMerge>
-        <time>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </time>
-        <area>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </area>
-        <browser>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </browser>
-        <user>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </user>
-        <project>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </project>
-        <query>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </query>
-        <queryLength>       	
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<length>0,0</length>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </queryLength>
-        <queryWC>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<length>0,0</length>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </queryWC>
-        <keyword>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<length>0,0</length>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<ctr1>0,0</ctr1>
-        	<ctr2>0,0</ctr2>
-        	<adfill>0,0</adfill>
-        </keyword>
-    </featureMerge>
-    
-    <profileMerge>
-         <time>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </time>
-        <area>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </area>
-        <browser>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </browser>
-        <user>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </user>
-        <project>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </project>
-        <query>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </query>
-        <queryLength>       	
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<length>0,0</length>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </queryLength>
-        <queryWC>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<length>0,0</length>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        </queryWC>
-        <keyword>
-        	<fv>all</fv>
-        	<nation>all</nation>
-        	<length>0,0</length>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-        	<tf>0,0</tf>
-        	<idf>0,0</idf>
-        	<wc>0,0</wc>
-        	<tfidf>0,0</tfidf>
-        </keyword>
-    </profileMerge>
-    
-    <userMerge>
-    	<all>
-          <nation>all</nation>
-        	<pv>0,0</pv>
-        	<impr>0,0</impr>
-        	<sv>0,0</sv>
-        	<click>0,0</click>
-      </all>
-    </userMerge>
-    
+	<featureMerge>
+		<all><!-- all中定义的条件用于全局，一旦设置全局，所有子特征项对应的该属性的条件设置无效 -->
+			<nation type="string">all</nation>  <!-- 值为all或以逗号隔开的字符串列表 -->
+			<pv type="int">all</pv><!-- 值为all或以逗号隔开的数值上下界，第一个为下界，第二个为上界，包含下界不包含上界 -->
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</all>
+		<time><!-- 该处定义的条件只适用于该类特征类别 -->
+			<fv type="string">all</fv><!-- 有2种设置方式，all，用括号包括再用逗号分隔的字符串列表如：('a','b') -->
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</time>
+		<area>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</area>
+		<browser>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</browser>
+		<user>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">10,100000</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</user>
+		<project>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</project>
+		<query>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<length type="int" key="length(fv)">3,300</length>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</query>
+		<query_length>
+			<fv type="string_int">3,300</fv><!-- 有三种设置方式，all，用括号包括再用逗号分隔的字符串列表如：('a','b')，逗号分隔的两个数字,适用于数字类型的字段指定该值得上下界如：3,5 -->
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</query_length>
+		<query_word_count>
+			<fv type="string_int">2,20</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</query_word_count>
+		<keyword>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<length type="int" key="length(fv)">3,30</length><!-- length(fv) -->
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<ctr1 type="double">all</ctr1>
+			<ctr2 type="double">all</ctr2>
+			<ad_fill type="double">all</ad_fill>
+		</keyword>
+	</featureMerge>
+
+	<profileMerge>
+		<all>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+		</all>
+		<time>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+		</time>
+		<area>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+		</area>
+		<browser>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+		</browser>
+		<user>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">10,100000</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+		</user>
+		<project>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">1,1000000</click>
+		</project>
+		<query>
+			<fv type="string">all</fv>
+			<nation type="string">all</nation>
+			<length type="int" key="length(fv)">3,300</length><!-- length(fv)由于用fv列出所有的长度不方便，特设此条件用于限制fv长度的上下界 -->
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+		</query>
+		<query_length>
+			<fv type="string_int">3,100</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+		</query_length>
+		<query_word_count>
+			<fv type="string_int">1,20</fv>
+			<nation type="string">all</nation>
+			<pv type="int">all</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+		</query_word_count>
+	</profileMerge>
+	<userKeywordMerge>
+		<all>
+			<fv type="string">all</fv>
+			<nation type="string">('us')</nation>
+			<length type="int" key="length(fv)">3,30</length><!-- 由于用fv列出所有的长度不方便，特设此条件用于限制fv的上下界 -->
+			<pv type="int">10,100000</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+			<tf type="double">all</tf>
+			<idf type="double">all</idf>
+			<wc type="double">all</wc>
+			<tfidf type="double">all</tfidf>
+		</all>
+	</userKeywordMerge>
+
+	<userMerge>
+		<all>
+			<nation type="string">all</nation>
+			<pv type="int">10,100000</pv>
+			<impr type="int">all</impr>
+			<sv type="int">all</sv>
+			<click type="int">all</click>
+		</all>
+	</userMerge>
+
 </export>

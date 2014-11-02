@@ -105,4 +105,42 @@ WHERE
     THEN rate > 0.417 
     ELSE rate > 0 
   END 
+  
+  
+  SELECT 
+  gid,
+  lang,
+  CASE
+    WHEN rate>0.4 AND rate <3 THEN 'level1'
+    WHEN rate>=3 AND rate <7 THEN 'level2'
+    WHEN rate>=7 AND rate <10 THEN 'level3'
+    ELSE 'noLevel'
+  END  AS LEVEL
+FROM
+  hb_count 
+  
+  
+=====================分析========================
+INSERT OVERWRITE LOCAL DIRECTORY '/home/hadoop/ssp_feature_ana' ROW FORMAT delimited FIELDS TERMINATED BY ',' stored AS textfile
+select a.ft,a.nation,a.adid,a.attr,sum(a.wc),sum(a.pv),sum(a.impr),sum(a.sv),sum(a.click) from(
+SELECT 
+  ft,nation,adid,
+  CASE
+  ft
+    WHEN 'user' THEN 'all'
+    WHEN 'time' THEN fv
+    WHEN 'area' THEN 'all'
+    WHEN 'browser' THEN fv
+    WHEN 'project' THEN fv
+    WHEN 'query' THEN 'all'
+    WHEN 'query_length' THEN fv
+    WHEN 'query_word_count' THEN fv
+    WHEN 'keyword' THEN 'all'
+    ELSE 'all'
+  END  as attr,1 as wc,pv,impr,sv,click FROM odin.feature_merge)a group by a.ft,a.nation,a.adid,a.attr
+  
+==========================导出===========================================
+
+select ft,fv,nation,adid,pv,impr,click,ctr1,ctr2,ad_fill from feature_merge where fv is not null  and case ft when 'user' then pv>20 when 'keyword' then pv >100 when 'query' then length(fv)>3 end limit 100;
+  
  
