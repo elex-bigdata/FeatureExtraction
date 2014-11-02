@@ -16,6 +16,7 @@ import com.elex.ssp.common.HiveOperator;
 import com.elex.ssp.common.PropertiesUtils;
 import com.elex.ssp.feature.tfidf.IDF;
 import com.elex.ssp.feature.tfidf.TF;
+import com.elex.ssp.workflow.ExportJob;
 import com.elex.ssp.workflow.FeatureDayProcessJob;
 import com.elex.ssp.workflow.MergeJob;
 import com.elex.ssp.workflow.PrepareJob;
@@ -102,6 +103,17 @@ public class Scheduler {
 				System.exit(success);
 			}
 			log.info("merge SUCCESS!!!");
+		}
+		
+		// stage 6
+		if (shouldRunNextPhase(stageArgs, currentPhase)) {
+			log.info("export !!!");
+			success = export();
+			if (success != 0) {
+				log.error("export ERROR!!!,SYSTEM EXIT!!!");
+				System.exit(success);
+			}
+			log.info("export SUCCESS!!!");
 		}
 		
 		
@@ -201,6 +213,11 @@ public class Scheduler {
 	public static int merge() throws SQLException{
 		
 		return MergeJob.doJob();
+	}
+	
+   public static int export() throws SQLException{
+		
+		return ExportJob.doJob();
 	}
 	
 	protected static boolean shouldRunNextPhase(String[] args, AtomicInteger currentPhase) {
