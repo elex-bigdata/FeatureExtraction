@@ -124,7 +124,7 @@ public class Condition {
 	}
 	
 	public String createExportConditionSent(String merge){
-		String[] items = xr.getFeatureExceptList(merge);
+		String[] items = xr.getFeatureExceptAllList(merge);
 		Element allElement = xr.getRoot().element(merge).element("all");
 		if(allElement != null){
 			buildAllConditionSent(allElement);

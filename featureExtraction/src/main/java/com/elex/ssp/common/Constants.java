@@ -58,10 +58,10 @@ public class Constants {
     } 
 	
 	public static void main(String[] args) throws ParseException{
-		for(String a:getBetweenDate("20140918","20141028")){
+		for(String a:getBetweenDate("20141028","20141102")){
 			System.out.println(a);
 		}
 		
-		System.out.println(getYestoday());
+		//System.out.println(getYestoday());
 	}
 }

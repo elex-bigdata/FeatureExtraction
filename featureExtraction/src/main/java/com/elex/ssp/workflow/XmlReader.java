@@ -54,7 +54,7 @@ public class XmlReader {
 								null:XmlReader.getXmlReaderInstance().getRoot().element(merge).element(feature).element(attr).getText();
 	}
 	
-	public String[] getFeatureExceptList(String merge){
+	public String[] getFeatureExceptAllList(String merge){
 		List<String> features = new ArrayList<String>();
 		Element e =XmlReader.getXmlReaderInstance().getRoot().element(merge);
 		if(e!=null){

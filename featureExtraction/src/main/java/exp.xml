@@ -17,7 +17,7 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 			<ctr1 type="double">all</ctr1>
 			<ctr2 type="double">all</ctr2>
 			<ad_fill type="double">all</ad_fill>
@@ -28,7 +28,7 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 			<ctr1 type="double">all</ctr1>
 			<ctr2 type="double">all</ctr2>
 			<ad_fill type="double">all</ad_fill>
@@ -47,7 +47,7 @@
 		<user>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<pv type="int">10,100000</pv>
+			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
@@ -61,7 +61,7 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 			<ctr1 type="double">all</ctr1>
 			<ctr2 type="double">all</ctr2>
 			<ad_fill type="double">all</ad_fill>
@@ -69,7 +69,7 @@
 		<query>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">3,300</length>
+			<length type="int" key="length(fv)">all</length>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
@@ -79,7 +79,7 @@
 			<ad_fill type="double">all</ad_fill>
 		</query>
 		<query_length>
-			<fv type="string_int">3,300</fv><!-- 有三种设置方式，all，用括号包括再用逗号分隔的字符串列表如：('a','b')，逗号分隔的两个数字,适用于数字类型的字段指定该值得上下界如：3,5 -->
+			<fv type="string_int">all</fv><!-- 有三种设置方式，all，用括号包括再用逗号分隔的字符串列表如：('a','b')，逗号分隔的两个数字,适用于数字类型的字段指定该值得上下界如：3,5 -->
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -90,7 +90,7 @@
 			<ad_fill type="double">all</ad_fill>
 		</query_length>
 		<query_word_count>
-			<fv type="string_int">2,20</fv>
+			<fv type="string_int">all</fv>
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -103,7 +103,7 @@
 		<keyword>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">3,30</length><!-- length(fv) -->
+			<length type="int" key="length(fv)">all</length><!-- length(fv) -->
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
@@ -128,7 +128,7 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 		</time>
 		<area>
 			<fv type="string">all</fv>
@@ -136,7 +136,7 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 		</area>
 		<browser>
 			<fv type="string">all</fv>
@@ -144,12 +144,12 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 		</browser>
 		<user>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<pv type="int">10,100000</pv>
+			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
@@ -160,19 +160,19 @@
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
-			<click type="int">1,1000000</click>
+			<click type="int">all</click>
 		</project>
 		<query>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">3,300</length><!-- length(fv)由于用fv列出所有的长度不方便，特设此条件用于限制fv长度的上下界 -->
+			<length type="int" key="length(fv)">all</length><!-- length(fv)由于用fv列出所有的长度不方便，特设此条件用于限制fv长度的上下界 -->
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
 		</query>
 		<query_length>
-			<fv type="string_int">3,100</fv>
+			<fv type="string_int">all</fv>
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -180,7 +180,7 @@
 			<click type="int">all</click>
 		</query_length>
 		<query_word_count>
-			<fv type="string_int">1,20</fv>
+			<fv type="string_int">all</fv>
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -192,8 +192,8 @@
 		<all>
 			<fv type="string">all</fv>
 			<nation type="string">('us')</nation>
-			<length type="int" key="length(fv)">3,30</length><!-- 由于用fv列出所有的长度不方便，特设此条件用于限制fv的上下界 -->
-			<pv type="int">10,100000</pv>
+			<length type="int" key="length(fv)">all</length><!-- 由于用fv列出所有的长度不方便，特设此条件用于限制fv的上下界 -->
+			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
@@ -207,7 +207,7 @@
 	<userMerge>
 		<all>
 			<nation type="string">all</nation>
-			<pv type="int">10,100000</pv>
+			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>

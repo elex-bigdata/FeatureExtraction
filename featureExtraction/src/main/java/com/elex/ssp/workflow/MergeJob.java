@@ -37,7 +37,7 @@ public class MergeJob {
 	}
 	
 	public static int profileMerge() throws SQLException{
-		String hql = "insert into table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = "insert overwrite table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
 				" where day >'"+Constants.getStartDay()+"' and fv is not null " +
 				" group by uid,ft,fv,nation";

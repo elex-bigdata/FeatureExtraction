@@ -32,8 +32,8 @@ public class ExportJob {
 		System.out.println("==================featureExport-sql==================");
 		System.out.println(hql);
 		System.out.println("==================featureExport-sql==================");
-		//return HiveOperator.executeHQL(hql)?0:1;
-		return 0;
+		return HiveOperator.executeHQL(hql)?0:1;
+		//return 0;
 	}
 	
 	
@@ -46,8 +46,8 @@ public class ExportJob {
 		System.out.println("==================profileExprot-sql==================");
 		System.out.println(hql);
 		System.out.println("==================profileExprot-sql==================");
-		//return HiveOperator.executeHQL(hql)?0:1;
-		return 0;
+		return HiveOperator.executeHQL(hql)?0:1;
+		//return 0;
 		
 	}
 	
@@ -58,8 +58,8 @@ public class ExportJob {
 		System.out.println("==================userExport-sql==================");
 		System.out.println(hql);
 		System.out.println("==================userExport-sql==================");
-		//return HiveOperator.executeHQL(hql)?0:1;
-		return 0;
+		return HiveOperator.executeHQL(hql)?0:1;
+		//return 0;
 	}
 	
 	public static int userKeywordExport() throws SQLException{
@@ -71,8 +71,8 @@ public class ExportJob {
 		System.out.println("==================userKeywordExport-sql==================");
 		System.out.println(hql);
 		System.out.println("==================userKeywordExport-sql==================");
-		//return HiveOperator.executeHQL(hql)?0:1;
-		return 0;
+		return HiveOperator.executeHQL(hql)?0:1;
+		//return 0;
 	}
 	
 }
