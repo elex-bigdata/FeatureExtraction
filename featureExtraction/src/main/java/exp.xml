@@ -191,7 +191,7 @@
 	<userKeywordMerge>
 		<all>
 			<fv type="string">all</fv>
-			<nation type="string">('us')</nation>
+			<nation type="string">all</nation>
 			<length type="int" key="length(fv)">all</length><!-- 由于用fv列出所有的长度不方便，特设此条件用于限制fv的上下界 -->
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>

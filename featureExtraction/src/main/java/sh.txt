@@ -1,6 +1,7 @@
 git clone https://github.com/elex-bigdata/feudf.git
 
 https://github.com/elex-bigdata/FeatureExtraction.git
+https://github.com/elex-bigdata/FEComm.git
 
 add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
 

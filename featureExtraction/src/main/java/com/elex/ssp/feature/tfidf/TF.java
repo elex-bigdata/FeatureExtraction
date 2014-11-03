@@ -90,7 +90,7 @@ public class TF extends Configured implements Tool{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace'");
 		String day = Constants.getStartDay();
-		String sql = "select uid,concatspace(query) from query_en where day >'"+day+"' group by uid";
+		String sql = "select uid,concatspace(query) from query_en2 where day >'"+day+"' group by uid";
 		String hql = "INSERT OVERWRITE DIRECTORY '"+uri+"' "+sql;
 		System.out.println("=================TF-prepareInput-sql===================");
 		System.out.println(hql);
