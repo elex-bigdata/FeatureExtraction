@@ -137,6 +137,7 @@ public class Condition {
 		if(!itemSB.toString().equals("")){
 			sb.append(" and case ft ");
 			sb.append(itemSB);
+			sb.append(" else 1=1 ");
 			sb.append(" end ");
 		}
 		return sb.toString();
