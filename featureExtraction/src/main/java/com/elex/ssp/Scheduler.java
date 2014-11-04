@@ -186,9 +186,6 @@ public class Scheduler {
 		FeatureDayProcessJob featureJob = new FeatureDayProcessJob();						
 		result += featureJob.process(isInit);
 		
-		UserProfileDayProcessJob profielJob = new UserProfileDayProcessJob();		
-		result += profielJob.process(isInit);
-		
 		return result;		
 		
 	}
