@@ -76,7 +76,7 @@ public class PrepareJob extends Job{
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en partition(day='"+day+"') ";
 		String hql = preHql+" select reqid,uid,tab.col1,nation,adid,pv,impr,1,click from log_merge lateral view qs(query,':') tab as col1 " +
-				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null and nation is not null and uid is not null";
+				"where day ='"+day+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and query is not null and nation is not null and uid is not null";
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
 		System.out.println(hql);
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
@@ -92,7 +92,7 @@ public class PrepareJob extends Job{
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en2 partition(day='"+day+"') ";
 		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),count(distinct adid),1,max(click) from log_merge lateral view qs(query,':') tab as col1 " +
-				"where day ='"+day+"' and array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),nation) and query is not null and nation is not null and uid is not null " +
+				"where day ='"+day+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and query is not null and nation is not null and uid is not null " +
 						"group by reqid,uid,tab.col1,nation";
 		System.out.println("==================PrepareJob-queryEnCollect2-sql==================");
 		System.out.println(hql);

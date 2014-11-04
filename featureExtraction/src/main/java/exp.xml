@@ -3,11 +3,11 @@
 	<featureMerge>
 		<all><!-- all中定义的条件用于全局，一旦设置全局，所有子特征项对应的该属性的条件设置无效 -->
 			<nation type="string">all</nation>  <!-- 值为all或以逗号隔开的字符串列表 -->
-			<pv type="int">all</pv><!-- 值为all或以逗号隔开的数值上下界，第一个为下界，第二个为上界，包含下界不包含上界 -->
+			<pv type="int">all</pv><!-- 值为all或以逗号隔开的数值上下界，第一个为下界，第二个为上界，包含下界不包含上界,上下界必须为整数格式 -->
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
-			<ctr1 type="double">all</ctr1>
+			<ctr1 type="double">all</ctr1><!-- 值为all或以逗号隔开的数值上下界，第一个为下界，第二个为上界，包含下界不包含上界,上下界必须为小数数格式，如0.1,0.7 -->
 			<ctr2 type="double">all</ctr2>
 			<ad_fill type="double">all</ad_fill>
 		</all>
