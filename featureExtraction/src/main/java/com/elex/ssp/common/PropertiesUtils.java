@@ -63,8 +63,7 @@ public class PropertiesUtils {
 	}
 
 	public static String getNations() {
-		// TODO Auto-generated method stub
-		return null;
+		return pop.getProperty("nations");
 	}
 
 }
