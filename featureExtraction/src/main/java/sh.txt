@@ -145,3 +145,12 @@ SELECT
 select ft,fv,nation,adid,pv,impr,click,ctr1,ctr2,ad_fill from feature_merge where fv is not null  and case ft when 'user' then pv>20 when 'keyword' then pv >100 when 'query' then length(fv)>3 end limit 100;
   
 nations='in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'
+
+ALTER TABLE ad_impression ADD COLUMNS (dt STRING);
+ALTER TABLE log_merge ADD COLUMNS (dt STRING);
+ALTER TABLE log_merge2 ADD COLUMNS (dt STRING);
+ALTER TABLE query_en ADD COLUMNS (dt STRING);
+ALTER TABLE query_en2 ADD COLUMNS (dt STRING);
+ALTER TABLE feature ADD COLUMNS (dt STRING);
+ALTER TABLE profile ADD COLUMNS (dt STRING);
+

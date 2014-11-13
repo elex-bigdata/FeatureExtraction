@@ -20,7 +20,7 @@ public class ExportJob {
 		int result = 0;
 		result += ExportJob.featureExport();
 		result += ExportJob.profileExprot();
-		result += ExportJob.userExport();
+		//result += ExportJob.userExport();
 		result += userKeywordExport();
 		return result;
 	}
@@ -51,7 +51,7 @@ public class ExportJob {
 		
 	}
 	
-	public static int userExport() throws SQLException{
+	/*public static int userExport() throws SQLException{
 		String preHql = "INSERT OVERWRITE table user_export ";
 		String hql = preHql+" select * " +
 				" from user_merge  where uid is not null " + new Condition().createExportConditionSent("userMerge");
@@ -60,7 +60,7 @@ public class ExportJob {
 		System.out.println("==================userExport-sql==================");
 		return HiveOperator.executeHQL(hql)?0:1;
 		//return 0;
-	}
+	}*/
 	
 	public static int userKeywordExport() throws SQLException{
 	    String preHql = "INSERT OVERWRITE table user_keyword_export ";

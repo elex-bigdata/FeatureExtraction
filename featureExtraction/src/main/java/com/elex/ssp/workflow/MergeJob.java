@@ -19,7 +19,7 @@ public class MergeJob {
 		int result = 0;
 		result += MergeJob.featureMerge();
 		result += MergeJob.profileMerge();
-		result += MergeJob.userMerge();
+		//result += MergeJob.userMerge();
 		return result;
 	}
 	
@@ -48,7 +48,7 @@ public class MergeJob {
 		
 	}
 	
-	public static int userMerge() throws SQLException{
+	/*public static int userMerge() throws SQLException{
 		String preHql = "insert overwrite table user_merge ";
 		String hql = preHql+" select fv,nation,adid,sum(pv),sum(impr),sum(sv),sum(click) " +
 				" from feature  " +
@@ -58,6 +58,6 @@ public class MergeJob {
 		System.out.println(hql);
 		System.out.println("==================userMerge-sql==================");
 		return HiveOperator.executeHQL(hql)?0:1;
-	}
+	}*/
 
 }

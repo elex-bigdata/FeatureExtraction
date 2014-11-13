@@ -11,7 +11,7 @@ public class PropertiesUtils {
 		InputStream is = null;
 		try {
 			is = PropertiesUtils.class.getClassLoader().getResourceAsStream(
-					"conf.properties");
+"conf.properties");
 			pop.load(is);
 		} catch (Exception e) {
 			e.printStackTrace();
