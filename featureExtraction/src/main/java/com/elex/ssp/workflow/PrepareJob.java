@@ -43,7 +43,7 @@ public class PrepareJob extends Job{
 		stmt.execute("CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon'");
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
 		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
-		String imprHql = " (SELECT reqid,adid,case when dt is null then 'default' else dt end as ndt,max(time),1 AS impr FROM ad_impression WHERE DAY='"+day+"' group by reqid,adid,dt)b ";
+		String imprHql = " (SELECT reqid,adid,case when dt is null then 'default' else dt end as ndt,max(time) as time,1 AS impr FROM ad_impression WHERE DAY='"+day+"' group by reqid,adid,dt)b ";
 		String clickHql = " (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='"+day+"' GROUP BY reqid)c ";
 		String searchHql = " (SELECT reqid,concatcolon(qn(keyword)) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
 		String hql = preHql+"SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,a.pv,b.adid,b.impr,b.time,c.click,d.q,d.sv,b.ndt FROM "+imprHql+"LEFT OUTER JOIN "+navHql+"ON a.reqid = b.reqid LEFT OUTER JOIN "+clickHql+"ON c.reqid = b.reqid LEFT OUTER JOIN "+searchHql+"ON d.reqid = b.reqid";
