@@ -2,8 +2,8 @@
 <export>
 	<featureMerge>
 		<all><!-- all中定义的条件用于全局，一旦设置全局，所有子特征项对应的该属性的条件设置无效 -->
-			<nation type="string">all</nation>  <!-- 值为all或以逗号隔开的字符串列表 -->
-			<pv type="int">all</pv><!-- 值为all或以逗号隔开的数值上下界，第一个为下界，第二个为上界，包含下界不包含上界,上下界必须为整数格式 -->
+			<nation type="string">('br')</nation>  <!-- 值为all或以逗号隔开的字符串列表 -->
+			<pv type="int">10,1000000000</pv><!-- 值为all或以逗号隔开的数值上下界，第一个为下界，第二个为上界，包含下界不包含上界,上下界必须为整数格式 -->
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
@@ -21,7 +21,7 @@
 			<ctr1 type="double">all</ctr1>
 			<ctr2 type="double">all</ctr2>
 			<ad_fill type="double">all</ad_fill>
-		</time>
+		</time>"bin/accumulate.sh"
 		<area>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
@@ -69,7 +69,7 @@
 		<query>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">all</length>
+			<length type="int" key="length(fv)">3,1000</length>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
@@ -79,7 +79,7 @@
 			<ad_fill type="double">all</ad_fill>
 		</query>
 		<query_length>
-			<fv type="string_int">all</fv><!-- 有三种设置方式，all，用括号包括再用逗号分隔的字符串列表如：('a','b')，逗号分隔的两个数字,适用于数字类型的字段指定该值得上下界如：3,5 -->
+			<fv type="string_int">3,1000</fv><!-- 有三种设置方式，all，用括号包括再用逗号分隔的字符串列表如：('a','b')，逗号分隔的两个数字,适用于数字类型的字段指定该值得上下界如：3,5 -->
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -90,7 +90,7 @@
 			<ad_fill type="double">all</ad_fill>
 		</query_length>
 		<query_word_count>
-			<fv type="string_int">all</fv>
+			<fv type="string_int">1,30</fv>
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -103,7 +103,7 @@
 		<keyword>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">all</length><!-- length(fv) -->
+			<length type="int" key="length(fv)">3,1000</length><!-- length(fv) -->
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
@@ -116,8 +116,8 @@
 
 	<profileMerge>
 		<all>
-			<nation type="string">all</nation>
-			<pv type="int">all</pv>
+			<nation type="string">('br')</nation>
+			<pv type="int">10,1000000000</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
@@ -165,14 +165,14 @@
 		<query>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">all</length><!-- length(fv)由于用fv列出所有的长度不方便，特设此条件用于限制fv长度的上下界 -->
+			<length type="int" key="length(fv)">3,1000</length><!-- length(fv)由于用fv列出所有的长度不方便，特设此条件用于限制fv长度的上下界 -->
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>
 		</query>
 		<query_length>
-			<fv type="string_int">all</fv>
+			<fv type="string_int">3,1000</fv>
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -180,7 +180,7 @@
 			<click type="int">all</click>
 		</query_length>
 		<query_word_count>
-			<fv type="string_int">all</fv>
+			<fv type="string_int">1,30</fv>
 			<nation type="string">all</nation>
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
@@ -191,8 +191,8 @@
 	<userKeywordMerge>
 		<all>
 			<fv type="string">all</fv>
-			<nation type="string">all</nation>
-			<length type="int" key="length(fv)">all</length><!-- 由于用fv列出所有的长度不方便，特设此条件用于限制fv的上下界 -->
+			<nation type="string">('br')</nation>
+			<length type="int" key="length(fv)">3,1000</length><!-- 由于用fv列出所有的长度不方便，特设此条件用于限制fv的上下界 -->
 			<pv type="int">all</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
@@ -206,8 +206,8 @@
 
 	<userMerge>
 		<all>
-			<nation type="string">all</nation>
-			<pv type="int">all</pv>
+			<nation type="string">('br')</nation>
+			<pv type="int">10,1000000000</pv>
 			<impr type="int">all</impr>
 			<sv type="int">all</sv>
 			<click type="int">all</click>

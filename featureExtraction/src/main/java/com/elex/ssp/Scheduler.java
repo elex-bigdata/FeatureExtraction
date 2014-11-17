@@ -152,8 +152,8 @@ public class Scheduler {
 		String profileMerge ="create table IF NOT EXISTS profile_merge(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(profileMerge);
 		
-		//String userMerge ="create table IF NOT EXISTS user_merge(uid string,nation string,adid string,pv int,impr int,sv int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
-		//stmt.execute(userMerge);
+		String userMerge ="create table IF NOT EXISTS user_merge(uid string,nation string,pv int,impr int,sv int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
+		stmt.execute(userMerge);
 		
 		String exprotFeature ="create table IF NOT EXISTS feature_export(ft string,fv string,nation string,adid string,pv int,sv int,impr int,click int,ctr1 double,ctr2 double,ad_fill double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(exprotFeature);
@@ -161,8 +161,8 @@ public class Scheduler {
 		String exportProfile ="create table IF NOT EXISTS profile_export(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(exportProfile);
 		
-		//String exportUserMerge ="create table IF NOT EXISTS user_export(uid string,nation string,adid string,pv int,impr int,sv int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
-		//stmt.execute(exportUserMerge);
+		String exportUserMerge ="create table IF NOT EXISTS user_export(uid string,nation string,pv int,impr int,sv int,click int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
+		stmt.execute(exportUserMerge);
 		
 		String exportUserKeyword ="create table IF NOT EXISTS user_keyword_export(uid string,ft string,fv string,nation string,pv int,sv int,impr int,click int,wc int, tf double,idf double,tfidf double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(exportUserKeyword);
