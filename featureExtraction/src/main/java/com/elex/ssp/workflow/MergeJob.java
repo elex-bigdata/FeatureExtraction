@@ -19,7 +19,7 @@ public class MergeJob {
 		int result = 0;
 		result += MergeJob.featureMerge();
 		result += MergeJob.profileMerge();
-		//result += MergeJob.userMerge();
+		result += MergeJob.userMerge();
 		return result;
 	}
 	

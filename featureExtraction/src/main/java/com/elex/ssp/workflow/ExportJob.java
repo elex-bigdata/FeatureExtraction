@@ -20,7 +20,7 @@ public class ExportJob {
 		int result = 0;
 		result += ExportJob.featureExport();
 		result += ExportJob.profileExprot();
-		//result += ExportJob.userExport();
+		result += ExportJob.userExport();
 		result += userKeywordExport();
 		return result;
 	}
