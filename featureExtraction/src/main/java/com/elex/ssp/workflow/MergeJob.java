@@ -39,7 +39,7 @@ public class MergeJob {
 	public static int profileMerge() throws SQLException{
 		String hql = "insert overwrite table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
-				" where day >'"+Constants.getStartDay()+"' and fv is not null and dt is not null" +
+				" where day >'"+Constants.getStartDay()+"' and fv is not null and dt is not null " +
 				" group by uid,ft,fv,nation";
 		System.out.println("==================profileMerge-sql==================");
 		System.out.println(hql);
@@ -52,7 +52,7 @@ public class MergeJob {
 		String preHql = "insert overwrite table user_merge ";
 		String hql = preHql+" select fv,nation,sum(pv),sum(impr),sum(sv),sum(click) " +
 				" from profile  " +
-				" where ft ='user' and fv is not null and dt is not null" +
+				" where ft ='user' and fv is not null and dt is not null " +
 				" group by fv,nation";
 		System.out.println("==================userMerge-sql==================");
 		System.out.println(hql);

@@ -48,7 +48,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='time') ";
 		String hql = preHql+" select tab.col1,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge lateral view tf(time,nation) tab as col1 " +
-				"where day ='"+day+"' and time is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and time is not null and nation is not null and adid is not null and dt is not null " +
 				" group by tab.col1,nation,adid,dt";
 		System.out.println("==================DayProcess-timeFeature-sql==================");
 		System.out.println(hql);
@@ -67,7 +67,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='area') ";
 		String hql = preHql+" select area(ip),nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge " +
-				"where day ='"+day+"' and ip is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and ip is not null and nation is not null and adid is not null and dt is not null " +
 				" group by area(ip),nation,adid,dt";
 		System.out.println("==================DayProcess-IPFeature-sql==================");
 		System.out.println(hql);
@@ -83,7 +83,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='browser') ";
 		String hql = preHql+" select ua,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge " +
-				"where day ='"+day+"' and ua is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and ua is not null and nation is not null and adid is not null and dt is not null " +
 				" group by ua,nation,adid,dt";
 		System.out.println("==================DayProcess-browserFeature-sql==================");
 		System.out.println(hql);
@@ -99,7 +99,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='user') ";
 		String hql = preHql+" select uid,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge " +
-				"where day ='"+day+"' and uid is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and uid is not null and nation is not null and adid is not null and dt is not null " +
 				" group by uid,nation,adid,dt";
 		System.out.println("==================DayProcess-userFeature-sql==================");
 		System.out.println(hql);
@@ -115,7 +115,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='project') ";
 		String hql = preHql+" select pid,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge " +
-				"where day ='"+day+"' and pid is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and pid is not null and nation is not null and adid is not null and dt is not null " +
 				" group by pid,nation,adid,dt";
 		System.out.println("==================DayProcess-projectFeature-sql==================");
 		System.out.println(hql);
@@ -133,7 +133,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query') ";
 		String hql = preHql+" select qn(query),nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from query_en " +
-				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and query is not null and nation is not null and adid is not null and dt is not null " +
 				" group by qn(query),nation,adid,dt";
 		System.out.println("==================DayProcess-queryFeature-sql==================");
 		System.out.println(hql);
@@ -151,7 +151,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_length') ";
 		String hql = preHql+" select ql(query),nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from query_en " +
-				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and query is not null and nation is not null and adid is not null and dt is not null " +
 				" group by ql(query),nation,adid,dt";
 		System.out.println("==================DayProcess-queryLengthFeature-sql==================");
 		System.out.println(hql);
@@ -169,7 +169,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='query_word_count') ";
 		String hql = preHql+" select wc(query),nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from query_en " +
-				"where day ='"+day+"' and query is not null and nation is not null and adid is not null " +
+				"where day ='"+day+"' and query is not null and nation is not null and adid is not null and dt is not null " +
 				" group by wc(query),nation,adid,dt";
 		System.out.println("==================DayProcess-queryWordCountFeature-sql==================");
 		System.out.println(hql);
@@ -187,7 +187,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='keyword') ";
 		String hql = preHql+" select k.keyword,k.nation,k.adid,sum(k.pv),sum(k.sv),sum(k.impr),sum(k.click),k.dt from " +
 				"(select tab.col1 as keyword,nation,adid,pv,sv,impr,click,dt from query_en lateral view sed(query) tab as col1 " +
-				"where day ='"+day+"' and query is not null and nation is not null and adid is not null)k group by k.keyword,k.nation,k.adid,k.dt";
+				"where day ='"+day+"' and query is not null and nation is not null and adid is not null and dt is not null)k group by k.keyword,k.nation,k.adid,k.dt";
 		System.out.println("==================DayProcess-keywordFeature-sql==================");
 		System.out.println(hql);
 		System.out.println("==================DayProcess-keywordFeature-sql==================");
