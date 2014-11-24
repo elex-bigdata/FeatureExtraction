@@ -57,6 +57,33 @@ public class Constants {
         return v.toArray(new String[v.size()]);
     } 
 	
+	public static String getIntFromStr(String str){
+		int seed = 131; // 31 131 1313 13131 131313 etc..
+		int hash = 0;
+		for (int i = 0; i < str.length(); i++) {
+			hash = (hash * seed) + str.charAt(i);
+		}
+		return Integer.toString(hash & 0x7FFFFFFF);
+		
+	}
+	
+	public static String getArea(String ip){
+		String area = null;
+		
+		if(ip != null){
+			if(!ip.trim().equals("")){
+				if(ip.split("\\.").length==4){
+					area = ip.substring(0, ip.lastIndexOf("."));
+				}else{
+					area=ip;
+				}
+			}			
+		}
+		
+		return area;
+	}
+	
+	
 	public static void main(String[] args) throws ParseException{
 		for(String a:getBetweenDate("20141028","20141102")){
 			System.out.println(a);

@@ -21,7 +21,7 @@
 			<ctr1 type="double">all</ctr1>
 			<ctr2 type="double">all</ctr2>
 			<ad_fill type="double">all</ad_fill>
-		</time>"bin/accumulate.sh"
+		</time>
 		<area>
 			<fv type="string">all</fv>
 			<nation type="string">all</nation>
