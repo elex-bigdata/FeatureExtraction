@@ -85,16 +85,40 @@ public class TF extends Configured implements Tool{
 	}
 	
 	public static void prepareInput(String uri) throws SQLException{
+		
+		gatherGDPGoogleQuery();
+		
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace'");
 		String day = Constants.getStartDay();
-		String sql = "select uid,concatspace(query) from query_en2 where day >'"+day+"' group by uid";
+		String sql = "select y.uid,concat_ws(' ',y.q,g.query)" +
+				" from(select uid,concatspace(query) as q from query_en2 where day >'"+day+"' group by uid)y" +
+				" left outer join gdp_search g on y.uid=g.uid";
 		String hql = "INSERT OVERWRITE DIRECTORY '"+uri+"' "+sql;
 		System.out.println("=================TF-prepareInput-sql===================");
 		System.out.println(hql);
 		System.out.println("=================TF-prepareInput-sql===================");
+		stmt.execute(hql);
+		stmt.close();
+	}
+	
+	public static void gatherGDPGoogleQuery() throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace'");
+		stmt.execute("CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query'");
+		stmt.execute("set mapred.reduce.tasks = "+Constants.getStartDay());
+		String hql = "INSERT OVERWRITE TABLE gdp_search SELECT a.uid,concatspace(a.q) " +
+				" FROM(SELECT uid,CASE WHEN url RLIKE '.*q=(.*?)(\\&\\.*)' THEN qn(regexp_extract(url, '.*q=(.*?)(\\&\\.*)', 1)) " +
+				" ELSE qn(regexp_extract(url, '.*q=(.*)', 1)) END AS q  " +
+				" FROM odin.gdp WHERE url LIKE '%google.com%'  AND url LIKE '%q=%'  AND DAY > " +
+				" '"+Constants.getStartDay()+"'  AND nation = 'br' ) a GROUP BY a.uid";
+		System.out.println("=================TF-gatherGDPGoogleQuery-sql===================");
+		System.out.println(hql);
+		System.out.println("=================TF-gatherGDPGoogleQuery-sql===================");
 		stmt.execute(hql);
 		stmt.close();
 	}
