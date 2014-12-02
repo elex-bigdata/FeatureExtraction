@@ -20,7 +20,7 @@ public class ExportJob {
 		int result = 0;
 		result += ExportJob.featureExport();
 		result += ExportJob.profileExprot();
-		result += ExportJob.userExport();
+		//result += ExportJob.userExport();
 		result += userKeywordExport();
 		return result;
 	}
@@ -64,11 +64,13 @@ public class ExportJob {
 	
 	public static int userKeywordExport() throws SQLException{
 	    String preHql = "INSERT OVERWRITE table user_keyword_export ";
-		String hql = preHql+" select CASE WHEN p.uid IS NULL THEN t.uid ELSE p.uid END,'keyword',CASE WHEN p.fv IS NULL THEN t.word ELSE p.fv END," +
+		String hql = preHql+" select t.uid,'keyword',t.word," +
 				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
-				" from profile_merge p full outer join tfidf t on p.uid=t.uid and p.fv=t.word " +
-				" where p.fv is not null and p.uid is not null and p.ft =='keyword' " + 
-				new Condition().createExportConditionSent("userKeywordMerge");
+				" from tfidf t left outer join " +
+				" (SELECT uid,fv,MAX(nation) AS nation,MAX(pv) AS pv,MAX(sv) AS sv,MAX(impr) AS impr,MAX(click) AS click FROM profile_merge" +
+				" WHERE fv IS NOT NULL  AND uid IS NOT NULL AND ft == 'keyword' "+ new Condition().createExportConditionSent("userKeywordMerge")+" GROUP BY uid,fv)p" +
+				" on p.uid=t.uid and p.fv=t.word " +
+				" where length(t.word)>2 and length(t.word)<1000 ";
 		System.out.println("==================userKeywordExport-sql==================");
 		System.out.println(hql);
 		System.out.println("==================userKeywordExport-sql==================");

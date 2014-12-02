@@ -19,7 +19,7 @@ public class MergeJob {
 		int result = 0;
 		result += MergeJob.featureMerge();
 		result += MergeJob.profileMerge();
-		result += MergeJob.userMerge();
+		//result += MergeJob.userMerge();
 		return result;
 	}
 	
@@ -54,7 +54,7 @@ public class MergeJob {
 		String preHql = "insert overwrite table user_merge ";
 		String hql = preHql+" select fv,nation,sum(pv),sum(impr),sum(sv),sum(click) " +
 				" from profile  " +
-				" where ft ='user' and fv is not null and dt is not null " +
+				" where day >'"+Constants.getStartDay()+"' and ft ='user' and fv is not null and dt is not null " +
 				" group by fv,nation";
 		System.out.println("==================userMerge-sql==================");
 		System.out.println(hql);
