@@ -40,7 +40,7 @@ public class Scheduler {
 		// stage 0
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("create tables!!!");
-			success = createTables();
+			//success = createTables();
 			if (success != 0) {
 				log.error("create tables ERROR!!!,SYSTEM EXIT!!!");
 				System.exit(success);

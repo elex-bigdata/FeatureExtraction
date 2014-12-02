@@ -154,3 +154,41 @@ ALTER TABLE query_en2 ADD COLUMNS (dt STRING);
 ALTER TABLE feature ADD COLUMNS (dt STRING);
 ALTER TABLE profile ADD COLUMNS (dt STRING);
 
+====================gdp=========================
+create table gdp_daysearch(uid string,query string) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+create table gdp_search_merge(uid string,query string)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace';
+CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query';
+
+set mapred.reduce.tasks = 20;
+
+INSERT OVERWRITE TABLE gdp_search 
+SELECT 
+  a.uid,
+  concatspace(a.q) 
+FROM
+  (SELECT 
+    uid,
+    CASE
+      WHEN url RLIKE '.*q=(.*?)(\\&\\.*)' 
+      THEN qn(regexp_extract(url, '.*q=(.*?)(\\&\\.*)', 1))
+      ELSE qn(regexp_extract(url, '.*q=(.*)', 1))
+    END AS q 
+  FROM
+    odin.gdp 
+  WHERE url LIKE '%google.com%' 
+    AND url LIKE '%q=%' 
+    AND DAY > '20141026' 
+    AND nation = 'br' 
+    AND LOWER(SUBSTR(lang, 0, 2)) = 'en') a  
+  GROUP BY a.uid;
+  
+#hive更改表名  
+alter table gdp_search rename to gdp_search_merge;
+
+
+select count(1) from (select a.uid from(select distinct uid from query_en2 where day>'20141101')a join (select distinct uid from gdp_daysearch)b on a.uid=b.uid)t
+1192078:214670:19160

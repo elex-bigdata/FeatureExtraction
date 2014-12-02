@@ -30,6 +30,7 @@ public class PrepareJob extends Job{
 		result += logMerge2(day);
 		result += PrepareJob.queryEnCollect(day);
 		result += queryEnCollect2(day);
+		result += gdpGoogleSearch(day);
 		
 		return result;
 	}
@@ -75,7 +76,7 @@ public class PrepareJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en partition(day='"+day+"') ";
-		String hql = preHql+" select reqid,uid,tab.col1,nation,adid,pv,impr,1,click,dt from log_merge lateral view qs(query,':') tab as col1 " +
+		String hql = preHql+" select reqid,uid,tab.col1,nation,adid,pv,impr,sv,click,dt from log_merge lateral view qs(query,':') tab as col1 " +
 				"where day ='"+day+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and query is not null and nation is not null and uid is not null";
 		System.out.println("==================PrepareJob-queryEnCollect-sql==================");
 		System.out.println(hql);
@@ -91,12 +92,31 @@ public class PrepareJob extends Job{
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en2 partition(day='"+day+"') ";
-		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),sum(distinct adid),1,max(click),dt from log_merge lateral view qs(query,':') tab as col1 " +
+		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),sum(impr),max(sv),max(click),dt from log_merge lateral view qs(query,':') tab as col1 " +
 				"where day ='"+day+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and query is not null and nation is not null and uid is not null " +
 						"group by reqid,uid,tab.col1,nation,dt";
 		System.out.println("==================PrepareJob-queryEnCollect2-sql==================");
 		System.out.println(hql);
 		System.out.println("==================PrepareJob-queryEnCollect2-sql==================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
+	}
+	
+	public static int gdpGoogleSearch(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace'");
+		stmt.execute("CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query'");
+		String hql = "INSERT OVERWRITE TABLE gdp_daysearch  partition(day='"+day+"')  SELECT a.uid,concatspace(a.q) " +
+				" FROM(SELECT uid,CASE WHEN url RLIKE '.*q=(.*?)(\\&\\.*)' THEN qn(regexp_extract(url, '.*q=(.*?)(\\&\\.*)', 1)) " +
+				" ELSE qn(regexp_extract(url, '.*q=(.*)', 1)) END AS q " +
+				" FROM odin.gdp WHERE url LIKE '%google.com%'  AND url LIKE '%q=%'  AND DAY = " +
+				" '"+day+"'  AND nation = 'br' ) a GROUP BY a.uid";
+		System.out.println("=================PrepareJob-gdpGoogleSearch-sql===================");
+		System.out.println(hql);
+		System.out.println("=================PrepareJob-gdpGoogleSearch-sql===================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;
