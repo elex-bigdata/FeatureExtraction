@@ -64,8 +64,9 @@ public class ExportJob {
 	
 	public static int userKeywordExport() throws SQLException{
 	    String preHql = "INSERT OVERWRITE table user_keyword_export ";
-		String hql = preHql+" select p.uid,p.ft,p.fv,p.nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
-				" from profile_merge p left outer join tfidf t on p.uid=t.uid and p.fv=t.word " +
+		String hql = preHql+" select CASE WHEN p.uid IS NULL THEN t.uid ELSE p.uid END,'keyword',CASE WHEN p.fv IS NULL THEN t.word ELSE p.fv END," +
+				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
+				" from profile_merge p full outer join tfidf t on p.uid=t.uid and p.fv=t.word " +
 				" where p.fv is not null and p.uid is not null and p.ft =='keyword' " + 
 				new Condition().createExportConditionSent("userKeywordMerge");
 		System.out.println("==================userKeywordExport-sql==================");
