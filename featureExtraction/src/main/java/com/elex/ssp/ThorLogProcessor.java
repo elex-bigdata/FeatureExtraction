@@ -7,8 +7,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang.time.DateFormatUtils;
 
 public class ThorLogProcessor {
 
@@ -21,6 +25,8 @@ public class ThorLogProcessor {
     public static final String BROWSER = "bw";
     public static final String USER = "u";
     public static final String PROJECT = "p";
+    public static final Calendar cal = Calendar.getInstance();
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     
 	/**
@@ -33,16 +39,15 @@ public class ThorLogProcessor {
 
 	}
 
-	public static void process(File file,String[] args) throws IOException{
+	public static void process(File file,String[] args) throws IOException, ParseException{
 		BufferedReader in = new BufferedReader(new FileReader(file));
 		File predict_file = new File(args[1]);
 		BufferedWriter predict = new BufferedWriter(new FileWriter(predict_file));	
 		File fv_file = new File(args[2]);
 		BufferedWriter fv = new BufferedWriter(new FileWriter(fv_file));	
 		String line = in.readLine();
-		String[] logs = new String[3];
-		String[] kv,fv_line,fv_array;
-		String reqid=null,adid=null,predict_v = null,ft=null;
+		String[] fv_line,fv_array;
+		String reqid=null,ft=null,day=null;
 		Map<String,String> ftMap = new HashMap<String,String>();
 		ftMap.put("q", "query");
 		ftMap.put("ql", "query_length");
@@ -56,39 +61,23 @@ public class ThorLogProcessor {
 		
 		while(line != null){
 			
-			logs[0]=line.trim();			
-			if(logs[0]!=null){
-				if(logs[0].contains("calculate score spend")){
-					reqid = logs[0].substring(24, logs[0].indexOf("calculate")).trim();	
-				}
-			}
+			line=line.trim();									
 			
-			logs[1]=in.readLine();
-			if(logs[1]!=null){
-				if(logs[1].contains("Top score")){
-					kv=logs[1].substring(logs[1].indexOf("(")+1,logs[1].indexOf(")")).split(",");
-					if(kv.length==2){
-						adid=kv[0];
-						predict_v=kv[1];
-					}				
-				}
-			}
-			
-						
-			predict.write(reqid+","+adid+","+predict_v+"\r\n");
-			
-			logs[2]=in.readLine();
-			if(logs[2]!=null){
-				if(logs[2].contains("MSG")){
-					fv_line=logs[2].substring(24,logs[2].length()).split("\t");
-					if(fv_line.length==9){
-						fv_array=fv_line[8].split("\\.");
+			if(line!=null){
+				if(line.contains("MSG")){
+					fv_line=line.substring(24,line.length()).split("\t");
+					day = line.trim().substring(0,19);
+					cal.setTime(sdf.parse(day));
+					day = DateFormatUtils.formatUTC(cal.getTimeInMillis(), "yyyy-MM-dd");
+					if(fv_line.length==10){
+						reqid=fv_line[1];
+						predict.write(day+","+fv_line[1]+","+fv_line[5]+","+fv_line[6]+"\r\n");
+						fv_array=fv_line[9].split(";");						
 						for(int i=0;i<fv_array.length;i++){
-							if(fv_array[i].contains("_")){
-								ft=ftMap.get(fv_array[i].substring(0,fv_array[i].indexOf("_")));
-								for(String v:fv_array[i].substring(fv_array[i].indexOf("_")+1, fv_array[i].length()).split("_")){
-									fv.write(reqid+","+ft+","+v+"\r\n");
-								}
+							ft=ftMap.get(fv_array[i].substring(0,fv_array[i].indexOf(",")));
+							
+							for(String v:fv_array[i].substring(fv_array[i].indexOf(",")+1, fv_array[i].length()).split(",")){
+								fv.write(day+","+reqid+","+ft+","+v+"\r\n");
 							}																					
 						}
 						
