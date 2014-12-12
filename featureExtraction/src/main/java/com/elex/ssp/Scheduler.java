@@ -7,11 +7,13 @@ import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elex.ssp.common.Constants;
 import com.elex.ssp.common.HiveOperator;
 import com.elex.ssp.common.PropertiesUtils;
 import com.elex.ssp.feature.tfidf.IDF;
@@ -137,7 +139,7 @@ public class Scheduler {
 		String queryEn2 = "create table IF NOT EXISTS query_en2(reqid string,uid string,query string,nation string,pv int,impr int,sv int,click int,dt string) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(queryEn2);
 		
-		String tfidf="create table IF NOT EXISTS tfidf(uid string,word string,wc int,tf double,idf double,tfidf double) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
+		String tfidf="create table IF NOT EXISTS tfidf(uid string,word string,wc int,tf double,idf double,tfidf double) partitioned by(source STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
 		stmt.execute(tfidf);
 		
 		String feature ="create table IF NOT EXISTS feature(fv string,nation string,adid string,pv int,sv int,impr int,click int,dt string) partitioned by(day string,ft string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile";
@@ -202,10 +204,67 @@ public class Scheduler {
 	}
 	
 	public static int tfidf() throws Exception{
-		int a = ToolRunner.run(new Configuration(), new TF(), null);
-		int b = ToolRunner.run(new Configuration(), new IDF(), null);
+		int a = sspTFIDF();
+		int b = gdpTFIDF();
 		return Math.max(a, b);
 	}
+	
+	public static int sspTFIDF() throws Exception{
+		String day = Constants.getStartDay();
+		String uri = PropertiesUtils.getRootDir() + Constants.USERDOCS;
+		String sql="select uid,concatspace(query) as q from query_en2 where day >'"+day+"' group by uid";
+		prepareTFIDFInput(uri,sql);
+		int a = ToolRunner.run(new Configuration(), new TF(), null);
+		int b = ToolRunner.run(new Configuration(), new IDF(), null);
+		Path output = new Path(PropertiesUtils.getRootDir() + Constants.IDF);
+		if(b==0){
+			loadResultToHive(output,"ssp");
+		}
+		return Math.max(a, b);
+	}
+	
+	public static int gdpTFIDF() throws Exception{
+		String day = Constants.getStartDay();
+		String uri = PropertiesUtils.getRootDir() + Constants.USERDOCS;
+		String sql="select uid,concatspace(query) as q from gdp_daysearch where day >'"+day+"' group by uid";
+		prepareTFIDFInput(uri,sql);
+		int a = ToolRunner.run(new Configuration(), new TF(), null);
+		int b = ToolRunner.run(new Configuration(), new IDF(), null);
+		
+		Path output = new Path(PropertiesUtils.getRootDir() + Constants.IDF);
+		if(b==0){
+			loadResultToHive(output,"gdp");
+		}
+		
+		return Math.max(a, b);
+	}
+	
+	
+   public static void prepareTFIDFInput(String uri,String sql) throws SQLException{
+		
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace'");
+		//String day = Constants.getStartDay();
+		/*String sql = "select case when y.uid is null then g.uid else y.uid end,concat_ws(' ',y.q,g.q)" +
+				" from(select uid,concatspace(query) as q from query_en2 where day >'"+day+"' group by uid)y" +
+				" full outer join (select uid,concatspace(query) as q from gdp_daysearch where day >'"+day+"' group by uid)g on y.uid=g.uid";*/
+		String hql = "INSERT OVERWRITE DIRECTORY '"+uri+"' "+sql;
+		System.out.println("=================TF-prepareInput-sql===================");
+		System.out.println(hql);
+		System.out.println("=================TF-prepareInput-sql===================");
+		stmt.execute(hql);
+		stmt.close();
+	}
+   
+   public static void loadResultToHive(Path path,String source) throws SQLException{
+		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE +"partition(source='"+source+"')";
+		HiveOperator.loadDataToHiveTable(hql);
+		
+	}
+	
+	
 	
 	public static int merge() throws SQLException{
 		

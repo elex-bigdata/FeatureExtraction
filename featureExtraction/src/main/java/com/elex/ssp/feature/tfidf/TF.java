@@ -63,9 +63,8 @@ public class TF extends Configured implements Tool{
 		job.setOutputValueClass(Text.class);
 		job.setInputFormatClass(TextInputFormat.class);
 		
-		String uri = PropertiesUtils.getRootDir() + Constants.USERDOCS;
-		prepareInput(uri);
-		Path in = new Path(uri);							
+		Path in = new Path(PropertiesUtils.getRootDir() + Constants.USERDOCS);
+		//prepareInput(uri);					
 		FileInputFormat.addInputPath(job, in);
 		
 		job.setOutputFormatClass(TextOutputFormat.class);
@@ -83,24 +82,7 @@ public class TF extends Configured implements Tool{
 		
 		return result;
 	}
-	
-	public static void prepareInput(String uri) throws SQLException{
 		
-		Connection con = HiveOperator.getHiveConnection();
-		Statement stmt = con.createStatement();
-		stmt.execute("add jar " + Constants.UDFJAR);
-		stmt.execute("CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace'");
-		String day = Constants.getStartDay();
-		String sql = "select case when y.uid is null then g.uid else y.uid end,concat_ws(' ',y.q,g.q)" +
-				" from(select uid,concatspace(query) as q from query_en2 where day >'"+day+"' group by uid)y" +
-				" full outer join (select uid,concatspace(query) as q from gdp_daysearch where day >'"+day+"' group by uid)g on y.uid=g.uid";
-		String hql = "INSERT OVERWRITE DIRECTORY '"+uri+"' "+sql;
-		System.out.println("=================TF-prepareInput-sql===================");
-		System.out.println(hql);
-		System.out.println("=================TF-prepareInput-sql===================");
-		stmt.execute(hql);
-		stmt.close();
-	}
 	
 	
 	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text> {

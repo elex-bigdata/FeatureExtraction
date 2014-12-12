@@ -81,18 +81,13 @@ public class IDF extends Configured implements Tool {
 		FileOutputFormat.setOutputPath(job, output);
 
 		int result = job.waitForCompletion(true) ? 0 : 1;
-		if(result==0){
+		/*if(result==0){
 			loadResultToHive(output);
-		}		
+		}*/		
 		return result;
 		
 	}
 	
-	public static void loadResultToHive(Path path) throws SQLException{
-		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE;
-		HiveOperator.loadDataToHiveTable(hql);
-		
-	}
 
 	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text> {
 
