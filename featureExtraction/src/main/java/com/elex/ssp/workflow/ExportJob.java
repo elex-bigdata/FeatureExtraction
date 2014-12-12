@@ -68,7 +68,7 @@ public class ExportJob {
 		String hql = preHql+" select * from (select t.uid,concat(t.source,'keyword') as ft,t.word as fv," +
 				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END as nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
 				" from (select * from tfidf where source='gdp') t join " +
-				" (SELECT fv,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM feature_merge" +
+				" (SELECT fv,MAX(nation) as nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM feature_merge" +
 				" WHERE fv IS NOT NULL AND ft == 'keyword'  GROUP BY fv)p" +
 				" on p.fv=t.word)c " +
 				" where c.uid is not null "+ new Condition().createExportConditionSent("userKeywordMerge");
@@ -85,7 +85,7 @@ public class ExportJob {
 		String hql = preHql+" select * from(select t.uid,concat(t.source,'keyword') as ft,t.word as fv," +
 				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END as nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
 				" from (select * from tfidf where source='ssp') t join " +
-				" (SELECT uid,fv,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM profile_merge" +
+				" (SELECT uid,fv,MAX(nation) as nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM profile_merge" +
 				" WHERE fv IS NOT NULL  AND uid IS NOT NULL AND ft == 'keyword' GROUP BY uid,fv)p" +
 				" on p.uid=t.uid and p.fv=t.word)c " +
 				" where c.uid is not null "+ new Condition().createExportConditionSent("userKeywordMerge");
