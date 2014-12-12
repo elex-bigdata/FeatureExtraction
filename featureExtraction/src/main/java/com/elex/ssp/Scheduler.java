@@ -259,7 +259,7 @@ public class Scheduler {
 	}
    
    public static void loadResultToHive(Path path,String source) throws SQLException{
-		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE +"partition(source='"+source+"')";
+		String hql = "load data inpath '"+path.toString()+"/part*' overwrite into table "+Constants.TFIDFTABLE +" partition(source='"+source+"')";
 		HiveOperator.loadDataToHiveTable(hql);
 		
 	}

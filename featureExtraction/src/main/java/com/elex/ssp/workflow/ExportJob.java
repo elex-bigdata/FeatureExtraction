@@ -20,8 +20,8 @@ public class ExportJob {
 		int result = 0;
 		result += ExportJob.featureExport();
 		result += ExportJob.profileExprot();
-		//result += ExportJob.userExport();
-		result += userKeywordExport();
+		result += gdpUserKeywordExport();
+		result += sspUserKeywordExport();
 		return result;
 	}
 	
@@ -62,18 +62,36 @@ public class ExportJob {
 		//return 0;
 	}
 	
-	public static int userKeywordExport() throws SQLException{
+
+	public static int gdpUserKeywordExport() throws SQLException{
 	    String preHql = "INSERT OVERWRITE table user_keyword_export ";
-		String hql = preHql+" select t.uid,concat(t.source,'keyword'),t.word," +
-				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
-				" from tfidf t left outer join " +
-				" (SELECT uid,fv,MAX(nation) AS nation,MAX(pv) AS pv,MAX(sv) AS sv,MAX(impr) AS impr,MAX(click) AS click FROM profile_merge" +
-				" WHERE fv IS NOT NULL  AND uid IS NOT NULL AND ft == 'keyword' "+ new Condition().createExportConditionSent("userKeywordMerge")+" GROUP BY uid,fv)p" +
-				" on p.uid=t.uid and p.fv=t.word " +
-				" where t.uid is not null ";
-		System.out.println("==================userKeywordExport-sql==================");
+		String hql = preHql+" select * from (select t.uid,concat(t.source,'keyword') as ft,t.word as fv," +
+				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END as nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
+				" from (select * from tfidf where source='gdp') t join " +
+				" (SELECT fv,nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM feature_merge" +
+				" WHERE fv IS NOT NULL AND ft == 'keyword'  GROUP BY uid,fv,nation)p" +
+				" on p.fv=t.word)c " +
+				" where c.uid is not null "+ new Condition().createExportConditionSent("userKeywordMerge");
+		System.out.println("==================gdpuserKeywordExport-sql==================");
 		System.out.println(hql);
-		System.out.println("==================userKeywordExport-sql==================");
+		System.out.println("==================gdpuserKeywordExport-sql==================");
+		return HiveOperator.executeHQL(hql)?0:1;
+		//return 0;
+	}
+	
+	
+	public static int sspUserKeywordExport() throws SQLException{
+	    String preHql = "INSERT INTO table user_keyword_export ";
+		String hql = preHql+" select * from(select t.uid,concat(t.source,'keyword') as ft,t.word as fv," +
+				" CASE WHEN p.nation IS NULL THEN 'br' ELSE p.nation END as nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
+				" from (select * from tfidf where source='ssp') t join " +
+				" (SELECT uid,fv,MAX(nation) AS nation,MAX(pv) AS pv,MAX(sv) AS sv,MAX(impr) AS impr,MAX(click) AS click FROM profile_merge" +
+				" WHERE fv IS NOT NULL  AND uid IS NOT NULL AND ft == 'keyword' GROUP BY uid,fv)p" +
+				" on p.uid=t.uid and p.fv=t.word)c " +
+				" where c.uid is not null "+ new Condition().createExportConditionSent("userKeywordMerge");
+		System.out.println("==================sspuserKeywordExport-sql==================");
+		System.out.println(hql);
+		System.out.println("==================sspuserKeywordExport-sql==================");
 		return HiveOperator.executeHQL(hql)?0:1;
 		//return 0;
 	}
