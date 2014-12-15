@@ -1,3 +1,4 @@
+清理：sh clean.sh 20141025 20141113 >> clean_cmd.txt
 git clone https://github.com/elex-bigdata/feudf.git
 
 https://github.com/elex-bigdata/FeatureExtraction.git

@@ -118,10 +118,41 @@ public class Scheduler {
 			log.info("export SUCCESS!!!");
 		}
 		
+		//stage7 清理
+		if (shouldRunNextPhase(stageArgs, currentPhase)) {
+			log.info("clean !!!");
+			success = clean();
+			if (success != 0) {
+				log.error("clean ERROR!!!,SYSTEM EXIT!!!");
+				System.exit(success);
+			}
+			log.info("clean SUCCESS!!!");
+		}
+		
 		
 		HiveOperator.closeConn();
 	}
 	
+	private static int clean() throws SQLException {
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		String day = Constants.getStartDay();
+		String log="alter table log_merge drop partition (day='"+day+"')";
+		String log2="alter table log_merge2 drop partition (day='"+day+"')";
+		String feature="alter table feature drop partition (day='"+day+"')";
+		String profile="alter table profile drop partition (day='"+day+"')";
+		String q="alter table query_en drop partition (day='"+day+"')";
+		String q2="alter table query_en2 drop partition (day='"+day+"')";
+		
+		stmt.execute(log);
+		stmt.execute(log2);
+		stmt.execute(feature);
+		stmt.execute(profile);
+		stmt.execute(q);
+		stmt.execute(q2);				
+		return 0;
+	}
+
 	public static int createTables() throws SQLException{
 		
 		Connection con = HiveOperator.getHiveConnection();
