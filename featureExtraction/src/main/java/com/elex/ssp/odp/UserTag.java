@@ -21,7 +21,7 @@ public class UserTag {
 	
 	public static int gdpUTagMerge() throws SQLException{
 		String hql = "INSERT overwrite TABLE odin.gdp_utag_merge select uid,nation,tag,sum(visit) from " +
-				" odin.gdp_utag where day >'"+Constants.getStartDay()+"' AND array_contains (array ("+PropertiesUtils.getNations()+"), nation)) " +
+				" odin.gdp_utag where day >'"+Constants.getStartDay()+"' AND array_contains (array ("+PropertiesUtils.getNations()+"), nation) " +
 				" and tag != '' and tag is not null group by uid,nation,tag";
 		System.out.println("==================gdpUTagMerge-sql==================");
 		System.out.println(hql);
@@ -32,7 +32,7 @@ public class UserTag {
 	public static void tf() throws SQLException{
 
 		String hql = "INSERT OVERWRITE DIRECTORY '"+PropertiesUtils.getRootDir() + Constants.ODPTF+"' select m.uid,m.tag,m.visit,round(m.visit/t.vs,4) from gdp_utag_merge m " +
-				"join(select uid,sum(visit) as vs from gdp_utag_merge group by uid)t on m.uid=t.uid)";
+				"join(select uid,sum(visit) as vs from gdp_utag_merge group by uid)t on m.uid=t.uid";
 		System.out.println("==================UserTag-tf-sql==================");
 		System.out.println(hql);
 		System.out.println("==================UserTag-tf-sql==================");

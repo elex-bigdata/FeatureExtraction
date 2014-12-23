@@ -119,7 +119,7 @@ public class OdpIDF extends Configured implements Tool {
 		@Override
 		protected void map(LongWritable key, Text value, Context context)
 				throws IOException, InterruptedException {
-			kv=value.toString().split(",");
+			kv=value.toString().split("\\x01");
 			if(kv.length==4){
 				uid = kv[0];
 				word =kv[1];
