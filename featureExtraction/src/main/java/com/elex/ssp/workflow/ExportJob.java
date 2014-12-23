@@ -3,7 +3,6 @@ package com.elex.ssp.workflow;
 import java.sql.SQLException;
 
 import com.elex.ssp.common.HiveOperator;
-import com.elex.ssp.common.PropertiesUtils;
 
 public class ExportJob {
 	
@@ -22,6 +21,7 @@ public class ExportJob {
 		result += ExportJob.profileExprot();
 		result += gdpUserKeywordExport();
 		result += sspUserKeywordExport();
+		result += odpTagExport();
 		return result;
 	}
 	
@@ -97,7 +97,7 @@ public class ExportJob {
 	}
 	
 	public static int odpTagExport() throws SQLException{
-	    String preHql = "INSERT OVERWRITE table user_keyword_export ";
+	    String preHql = "INSERT INTO table user_keyword_export ";
 		String hql = preHql+" select * from (select t.uid,t.source,t.word,p.nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
 				" from (select * from tfidf where source='odp') t join " +
 				" (SELECT fv,MAX(nation) as nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM feature_merge" +
