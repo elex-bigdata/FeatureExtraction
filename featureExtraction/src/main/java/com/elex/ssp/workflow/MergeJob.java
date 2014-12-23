@@ -61,5 +61,6 @@ public class MergeJob {
 		System.out.println("==================userMerge-sql==================");
 		return HiveOperator.executeHQL(hql)?0:1;
 	}
+				
 
 }

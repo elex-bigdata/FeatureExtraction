@@ -1,0 +1,265 @@
+Arts,Arts
+Ciència i tecnologia,Science
+Compres,Shopping
+Economia i empresa,Business
+Educació,Education
+Esports,Sports
+Informàtica,Computers
+Jocs,Games
+Lleure,Recreation
+Mitjans de comunicació,News
+Nens i joves,Kids
+Referència,Reference
+Salut,Health
+Societat,Society
+Artes,Arts
+Lar,Home
+Ciência,Science
+Compras,Shopping
+Desportos,Sports
+Educação,Education
+Informática,Computers
+Jogos,Games
+Passatempos,Recreation
+Referência,Reference
+Saúde,Health
+Sociedade,Society
+Notícias,News
+Negócios,Business
+Artes,Arts
+Ciencia y tecnología,Science
+Compras,Shopping
+Deportes,Sports
+Educación,Education
+Hogar,Home
+Juegos,Games
+Medios de comunicación,News
+Negocios,Business
+Referencia,Reference
+Salud,Health
+Sociedad,Society
+Tiempo libre,Recreation
+Alışveriş,Shopping
+Ev,Home
+Basın ve Yayın,News
+Bilgisayar,Computers
+Bilim,Science
+Çocuklar ve Gençler,Kids
+Eğlence ve Yaşam,Recreation
+Ekonomi ve İş Dünyası,Business
+Kaynaklar,Society
+Kültür ve Sanat,Arts
+Oyunlar,Games
+Sağlık,Health
+Spor,Sports
+Toplum,Society
+Actualité,News
+Jeux,Games
+Loisirs,Recreation
+Boutiques en ligne,Shopping
+Maison,Home
+Commerce et économie,Business
+Références,Reference
+Enfants et ados,Kids
+Santé,Health
+Formation,Sports
+Sciences,Science
+Informatique,Computers
+Société,Society
+Sports,Sports
+Butikoj,Shopping
+Distriĝo,Recreation
+Hejmo,Home
+Informo,Reference
+Komerco,Business
+Komputado,Computers
+Kulturo,Arts
+Ludoj,Games
+Novaĵoj,News
+Sano,Health
+Scienco,Science
+Socio,Kids
+Sporto,Sports
+Acquisti Online,Shopping
+Affari,Business
+Arte,Arts
+Casa,Home
+Computer,Computers
+Consultazione,Reference
+Giochi,Games
+Notizie,News
+Salute,Health
+Scienza,Science
+Società,Society
+Sport,Sports
+Tempo Libero,Recreation
+Egészség,Health
+Hírek,News
+Játékok,Games
+Művészet és kultúra,Arts
+Oktatás,Education
+Otthon,Home
+Politika,Society
+Szabadidő,Recreation
+Számítástechnika,Computers
+Személyes lapok,Sports
+Tájékoztatás,Reference
+Társadalom,Society
+Tudomány,Science
+Üzlet,Business
+Vásárlás,Shopping
+Arts,Arts
+Business,Business
+Computers,Computers
+Games,Games
+Health,Health
+Home,Home
+Kids,Kids
+News,News
+Recreation,Recreation
+Reference,Reference
+Science,Science
+Shopping,Shopping
+Society,Society
+Sports,Sports
+Freizeit,Recreation
+Gesellschaft,Society
+Gesundheit,Health
+Kinder und Teens,Kids
+Kultur,Arts
+Medien,News
+Online-Shops,Shopping
+Spiele,Games
+Sport,Sports
+Wirtschaft,Business
+Wissen,Science
+Wissenschaft,Science
+Zuhause,Home
+Бизнес,Business
+Дети и подростки,Kids
+Дом,Business
+Досуг,Recreation
+Здоровье,Health
+Игры,Games
+Интернет,Computers
+Искусство,Arts
+Источники информации,Reference
+Компьютеры,Computers
+Наука,Science
+Новости и СМИ,News
+Образование,Education
+Общество,Society
+Покупки,Shopping
+Спорт,Sports
+Gezondheid,Health
+Huis en Tuin,Arts
+Jeugd,Kids
+Kunst,Arts
+Maatschappij,Society
+Naslag,Reference
+Nieuws en Media,News
+Onderwijs,Education
+Recreatie,Recreation
+Sport,Sports
+Webwinkelen,Shopping
+Wetenschap,Science
+Biznes,Business
+Dom,Business
+Gry,Games
+Komputery,Computers
+Kultura i sztuka,Arts
+Media,News
+Nauka i edukacja,Science
+Społeczeństwo,Society
+Wypoczynek,Recreation
+Zakupy,Shopping
+Zdrowie,Health
+Barn och ungdom,Kids
+Datorer,Computers
+Hälso- och sjukvård,Health
+Hus och hem,Home
+Kultur,Arts
+Näringsliv,Business
+Nöjen och fritid,Recreation
+Nyheter,News
+Referenser,Reference
+Samhälle,Society
+Spel,Games
+Vetenskap,Science
+Webbutiker,Shopping
+アート,Arts
+オンラインショップ,Shopping
+キッズとティーンズ,Kids
+ゲーム,Games
+コンピュータ,Computers
+スポーツ,Sports
+ニュース,News
+ビジネス,Business
+レクリエーション,Recreation
+健康,Health
+各種資料,Reference
+家庭,Home
+社会,Society
+科学,Science
+休闲,Recreation
+体育,Sports
+健康,Health
+儿童与青少年,Kids
+参考,Reference
+商业,Business
+家庭,Home
+新闻,News
+游戏,Games
+社会,Society
+科学,Science
+艺术,Arts
+计算机,Computer
+购物,Shopping
+休閒,Recreation
+運動,Sports
+健康,Health
+兒童與青少年,Kids
+參考,Reference
+商業,Business
+家居,Home
+新聞,News
+遊戲,Games
+社會,Society
+科學,Science
+藝術,Arts
+電腦,Computer
+購物,Shopping
+Edb,Computers
+Erhverv,Business
+Fritid,Recreation
+Hus og hjem,Home
+Netbutikker,Shopping
+Nyheder,News
+Spil,Games
+Sundhed,Health
+Videnskab,Science
+Samfund,Society
+Børn og unge,Kids
+Děti a mládež,Kids
+Domov,Home
+Hry,Games
+Internetové obchody,Shopping
+Obchod a služby,Business
+Počítače,Computers
+Společnost,Business
+Věda,Science
+Volný čas,Recreation
+Zdraví,Health
+Acasă,Home
+Afaceri,Business
+Computere,Computers
+Copii şi adolescenţi,Kids
+Cumpărături online,Shopping
+Educaţie,Education
+Jocuri,Games
+Mass-media,News
+Recreaţie,Recreation
+Referinţă,Reference
+Sănătate,Health
+Societate,Society
+Ştiinţă,Science

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.dom4j.Element;
 
 
+
 public class Condition {
 	
 	private Map<String,Boolean> all;

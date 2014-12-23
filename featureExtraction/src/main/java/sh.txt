@@ -193,3 +193,119 @@ alter table gdp_search rename to gdp_search_merge;
 
 select count(1) from (select a.uid from(select distinct uid from query_en2 where day>'20141101')a join (select distinct uid from gdp_daysearch)b on a.uid=b.uid)t
 1192078:214670:19160
+
+
+
+=================gdp_odp=========================
+java -cp .:odp.jar:dmoz.txt com.elex.ssp.odp.DmozUtils /data1/yac_url/content.rdf.u8 /data1/yac_url/rdf.csv >> error.txt
+
+cat rdf.csv | awk '{print $1}' >> a.txt
+
+create table odp_init(host string,category string)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+LOAD DATA LOCAL INPATH '/data1/yac_url/a.txt' overwrite into table odp_init;
+
+select category,count(1) as c from odp_init group by category order by c desc;
+
+create table odp(host string,category string)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+INSERT overwrite TABLE odp 
+SELECT 
+  a.host,
+  CASE
+    WHEN size (split (a.c, ':')) > 3 
+    THEN 
+    CASE
+      WHEN a.host LIKE '%.edu%' 
+      THEN 'Education' 
+      ELSE 'Composite' 
+    END 
+    ELSE a.c
+  END 
+FROM
+  (SELECT 
+    HOST,
+    CONCAT_WS(':', collect_set (category)) AS c 
+  FROM
+    odp_init 
+  GROUP BY HOST) a
+  
+=====odp分析=============
+select count(distinct category) from odp where size(split(category,':'))>1; 3053
+
+select count(distinct category) from odp; 3199
+
+
+drop table odp_init;
+
+create table gdp_odp(uid string,nation string,host string,category string,visit int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+====使用. 作为split分隔符时候要加上\\,否则hive会将.解释为正则中的特殊字符===========
+INSERT OVERWRITE TABLE gdp_odp PARTITION (DAY = '20141118') 
+SELECT 
+  t.uid,
+  t.nation,
+  t.domain,
+  o.category,
+  t.visit 
+FROM
+  odp o 
+  RIGHT OUTER JOIN 
+    (SELECT 
+      a.uid,
+      a.nation,
+      a.domain,
+      COUNT(1) AS visit 
+    FROM
+      (SELECT 
+        regexp_replace(uid,',','') as uid,
+        regexp_replace(nation,',','') as nation,
+        parse_url (regexp_replace(url,',',''), 'HOST') AS domain 
+      FROM
+        odin.gdp 
+      WHERE DAY = '20141118') a 
+    WHERE a.domain IS NOT NULL 
+      AND NOT(a.domain RLIKE '\\d+\\.\\d+\\.\\d+\\.\\d+') 
+      AND size (split (a.domain, '\\.')) >= 2 
+    GROUP BY a.uid,a.nation,a.domain) t 
+    ON t.domain = o.host  
+    
+====gdp_odp分析======
+select case when category is not null then 'yes' else 'no' end,sum(visit) from gdp_odp group by case when category is not null then 'yes' else 'no' end;
+
+create table gdp_utag(uid string,nation string,tag string,visit int)partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit';
+
+INSERT overwrite TABLE gdp_utag PARTITION (DAY = '20141118') 
+SELECT 
+  uid,
+  nation,
+  tab.col1,
+  SUM(visit) 
+FROM
+  gdp_odp lateral VIEW qs (category, ':') tab AS col1 
+WHERE category IS NOT NULL 
+  AND array_contains (array ('br'), nation) 
+GROUP BY uid,
+  nation,
+  tab.col1     
+
+====gdp_utag分析=====
+select tag,count(distinct uid),sum(visit) from gdp_utag group by tag;
+
+create table gdp_utag_merge(uid string,nation string,tag string,visit int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+INSERT overwrite TABLE gdp_utag_merge 
+ select uid,nation,tag,sum(visit) from gdp_utag group by uid,nation,tag
+
+INSERT OVERWRITE DIRECTORY '/ssp/odp/tf'
+ select m.uid,m.tag,m.visit,round(m.visit/t.vs,4) from gdp_utag_merge m join(select uid,sum(visit) as vs from gdp_utag_merge where array_contains (array ('br'), nation) group by uid)t on m.uid=t.uid where array_contains (array ('br'), m.nation)
+ 
+INSERT OVERWRITE DIRECTORY '/ssp/odp/idf'
+ select m.tag,round(log10(t.uc/m.tuc),4) from (select tag,count(distinct uid) as tuc from gdp_utag_merge group by tag)m join (select count(distinct uid) as uc from gdp_utag_merge) t on 1=1;  
+
+create table user_tag(uid string,tag string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+

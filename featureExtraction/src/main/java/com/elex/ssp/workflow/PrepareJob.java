@@ -31,7 +31,8 @@ public class PrepareJob extends Job{
 		result += PrepareJob.queryEnCollect(day);
 		result += queryEnCollect2(day);
 		result += gdpGoogleSearch(day);
-		
+		result += gdpODP(day);
+		result += gdpUTag(day);
 		return result;
 	}
 	
@@ -115,10 +116,45 @@ public class PrepareJob extends Job{
 				" FROM(SELECT uid,CASE WHEN url RLIKE '.*q=(.*?)(\\&\\.*)' THEN qn(regexp_extract(url, '.*q=(.*?)(\\&\\.*)', 1)) " +
 				" ELSE qn(regexp_extract(url, '.*q=(.*)', 1)) END AS q " +
 				" FROM odin.gdp WHERE url LIKE '%google.com%'  AND url LIKE '%q=%'  AND DAY = " +
-				" '"+day+"'  AND nation = 'br' ) a GROUP BY a.uid";
+				" '"+day+"'  AND array_contains (array ("+PropertiesUtils.getNations()+"), nation)) a GROUP BY a.uid";
 		System.out.println("=================PrepareJob-gdpGoogleSearch-sql===================");
 		System.out.println(hql);
 		System.out.println("=================PrepareJob-gdpGoogleSearch-sql===================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
+	}
+	
+	public static int gdpODP(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		String hql ="INSERT OVERWRITE TABLE odin.gdp_odp PARTITION (DAY='"+day+"') " +
+				"SELECT t.uid,t.nation,t.domain,o.category,t.visit FROM odin.odp o " +
+				"RIGHT OUTER JOIN (SELECT a.uid,a.nation,a.domain,COUNT(1) AS visit FROM(SELECT regexp_replace(uid,',','') AS uid," +
+				"regexp_replace(nation,',','') AS nation, parse_url (regexp_replace(url,',',''), 'HOST') AS domain FROM odin.gdp  " +
+				"WHERE DAY='"+day+"') a  WHERE a.domain IS NOT NULL  AND NOT(a.domain RLIKE '\\d+\\.\\d+\\.\\d+\\.\\d+')  " +
+				"AND size (split (a.domain, '\\.')) >= 2  GROUP BY a.uid,a.nation,a.domain) t  ON t.domain = o.host";
+		System.out.println("=================PrepareJob-gdpODP-sql===================");
+		System.out.println(hql);
+		System.out.println("=================PrepareJob-gdpODP-sql===================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
+	}
+	
+	
+	public static int gdpUTag(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
+		String hql ="INSERT overwrite TABLE odin.gdp_utag PARTITION (DAY='"+day+"') " +
+				"SELECT uid,nation,tab.col1,SUM(visit) FROM odin.gdp_odp " +
+				"lateral VIEW qs (category, ':') tab AS col1 WHERE " +
+				"category IS NOT NULL AND day='"+day+"' GROUP BY uid,nation,tab.col1";
+		System.out.println("=================PrepareJob-gdpUTag-sql===================");
+		System.out.println(hql);
+		System.out.println("=================PrepareJob-gdpUTag-sql===================");
 		stmt.execute(hql);
 		stmt.close();
 		return 0;

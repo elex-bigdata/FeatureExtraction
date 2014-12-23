@@ -18,6 +18,7 @@ import com.elex.ssp.common.HiveOperator;
 import com.elex.ssp.common.PropertiesUtils;
 import com.elex.ssp.feature.tfidf.IDF;
 import com.elex.ssp.feature.tfidf.TF;
+import com.elex.ssp.odp.UserTag;
 import com.elex.ssp.workflow.ExportJob;
 import com.elex.ssp.workflow.FeatureDayProcessJob;
 import com.elex.ssp.workflow.MergeJob;
@@ -84,7 +85,7 @@ public class Scheduler {
 		}
 		
 		
-		// stage 4
+		// stage4 ssp和gdp的tfidf计算
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("tfidf !!!");
 			success = tfidf();
@@ -93,10 +94,20 @@ public class Scheduler {
 				System.exit(success);
 			}
 			log.info("tfidf SUCCESS!!!");
-		}
+		}						
 		
+		// stage5 用户打标签
+		if (shouldRunNextPhase(stageArgs, currentPhase)) {
+			log.info("user_tag !!!");
+			success = userTag();
+			if (success != 0) {
+				log.error("user_tag ERROR!!!,SYSTEM EXIT!!!");
+				System.exit(success);
+			}
+			log.info("user_tag SUCCESS!!!");
+		}	
 		
-		// stage 5
+		// stage6 合并
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("merge !!!");
 			success = merge();
@@ -107,7 +118,7 @@ public class Scheduler {
 			log.info("merge SUCCESS!!!");
 		}
 		
-		// stage 6
+		//stage7导出
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("export !!!");
 			success = export();
@@ -118,7 +129,7 @@ public class Scheduler {
 			log.info("export SUCCESS!!!");
 		}
 		
-		//stage7 清理
+		//stage8清理
 		if (shouldRunNextPhase(stageArgs, currentPhase)) {
 			log.info("clean !!!");
 			success = clean();
@@ -132,6 +143,15 @@ public class Scheduler {
 		
 		HiveOperator.closeConn();
 	}
+	public static int userTag() throws Exception{
+		UserTag.gdpUTagMerge();
+		UserTag.tf();
+		UserTag.idf();
+		UserTag.tfidf();
+		UserTag.loadResult();
+		return 0;
+	}
+	
 	
 	private static int clean() throws SQLException {
 		Connection con = HiveOperator.getHiveConnection();

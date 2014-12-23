@@ -11,8 +11,11 @@ import java.util.Vector;
 public class Constants {
 
 	public static final String USERDOCS="/tfidf/userdocs";
+	public static final String ODPTF="/odp/tf";
 	public static final String TF="/tfidf/tf";
 	public static final String IDF="/tfidf/idf";
+	public static final String ODPIDF="/odp/idf";
+	public static final String ODPTFIDF="/odp/tfidf";
 	public static final String USERCOUNT="/tfidf/uc.norm";
 	public static final String TFIDFTABLE="tfidf";
 	public static final DecimalFormat df = new DecimalFormat("#.####");
