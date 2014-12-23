@@ -19,7 +19,7 @@ public class MergeJob {
 		int result = 0;
 		result += MergeJob.featureMerge();
 		result += MergeJob.profileMerge();
-		//result += MergeJob.userMerge();
+		result += odpFeatureMerge();
 		return result;
 	}
 	
@@ -50,17 +50,19 @@ public class MergeJob {
 		
 	}
 	
-	public static int userMerge() throws SQLException{
-		String preHql = "insert overwrite table user_merge ";
-		String hql = preHql+" select fv,nation,sum(pv),sum(impr),sum(sv),sum(click) " +
-				" from profile  " +
-				" where day >'"+Constants.getStartDay()+"' and ft ='user' and fv is not null and dt is not null " +
-				" group by fv,nation";
-		System.out.println("==================userMerge-sql==================");
+	public static int odpFeatureMerge() throws SQLException{
+		String hql = "INSERT INTO TABLE feature_merge SELECT 'odp',t.tag,t.nation,t.adid,SUM(t.pv),SUM(t.sv),SUM(t.impr),SUM(t.click)," +
+				" ROUND(CASE WHEN SUM(t.click) IS NULL OR SUM(t.pv) IS NULL THEN 0 ELSE SUM(t.click)/SUM(t.pv) END,4)," +
+				" ROUND(CASE WHEN SUM(t.click) IS NULL OR SUM(t.pv) IS NULL THEN 0 ELSE SUM(t.click)/SUM(t.pv) END,4)," +
+				" ROUND(CASE WHEN SUM(t.impr) IS NULL OR SUM(t.pv) IS NULL THEN 0 ELSE SUM(t.impr)/SUM(t.pv) END,4) " +
+				" FROM(SELECT /*+ MAPJOIN(b) */ b.tag,a.* FROM user_tag b JOIN " +
+				" (SELECT fv,nation,adid,pv,sv,impr,click FROM feature_merge WHERE ft='user')a  ON a.fv=b.uid)t GROUP BY t.tag,t.nation,t.adid";
+		System.out.println("==================odpFeatureMerge-sql==================");
 		System.out.println(hql);
-		System.out.println("==================userMerge-sql==================");
+		System.out.println("==================odpFeatureMerge-sql==================");
 		return HiveOperator.executeHQL(hql)?0:1;
 	}
+	
 				
 
 }

@@ -163,13 +163,17 @@ public class Scheduler {
 		String profile="alter table profile drop partition (day='"+day+"')";
 		String q="alter table query_en drop partition (day='"+day+"')";
 		String q2="alter table query_en2 drop partition (day='"+day+"')";
+		String odp1="alter table gdp_odp drop partition (day='"+day+"')";
+		String odp2="alter table gdp_utag drop partition (day='"+day+"')";
 		
 		stmt.execute(log);
 		stmt.execute(log2);
 		stmt.execute(feature);
 		stmt.execute(profile);
 		stmt.execute(q);
-		stmt.execute(q2);				
+		stmt.execute(q2);	
+		stmt.execute(odp1);
+		stmt.execute(odp2);
 		return 0;
 	}
 
