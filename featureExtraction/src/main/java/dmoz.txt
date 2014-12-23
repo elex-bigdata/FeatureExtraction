@@ -213,7 +213,7 @@ Webbutiker,Shopping
 社会,Society
 科学,Science
 艺术,Arts
-计算机,Computer
+计算机,Computers
 购物,Shopping
 休閒,Recreation
 運動,Sports
@@ -227,7 +227,7 @@ Webbutiker,Shopping
 社會,Society
 科學,Science
 藝術,Arts
-電腦,Computer
+電腦,Computers
 購物,Shopping
 Edb,Computers
 Erhverv,Business
