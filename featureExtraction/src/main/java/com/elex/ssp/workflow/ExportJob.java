@@ -98,7 +98,7 @@ public class ExportJob {
 	
 	public static int odpTagExport() throws SQLException{
 	    String preHql = "INSERT INTO table user_keyword_export ";
-		String hql = preHql+" select * from (select t.uid,t.source,t.word,p.nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
+		String hql = preHql+" select * from (select t.uid,t.source,t.word as fv,p.nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
 				" from (select * from tfidf where source='odp') t join " +
 				" (SELECT fv,MAX(nation) as nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM feature_merge" +
 				" WHERE fv IS NOT NULL AND ft = 'odp'  GROUP BY fv)p" +
