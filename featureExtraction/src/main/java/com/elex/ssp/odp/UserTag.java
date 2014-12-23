@@ -20,8 +20,7 @@ public class UserTag {
 	}
 	
 	public static int gdpUTagMerge() throws SQLException{
-		String preHql = "insert overwrite table user_merge ";
-		String hql = preHql+"INSERT overwrite TABLE odin.gdp_utag_merge select uid,nation,tag,sum(visit) from " +
+		String hql = "INSERT overwrite TABLE odin.gdp_utag_merge select uid,nation,tag,sum(visit) from " +
 				" odin.gdp_utag where day >'"+Constants.getStartDay()+"' AND array_contains (array ("+PropertiesUtils.getNations()+"), nation)) " +
 				" and tag != '' and tag is not null group by uid,nation,tag";
 		System.out.println("==================gdpUTagMerge-sql==================");
