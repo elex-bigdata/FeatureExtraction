@@ -69,7 +69,7 @@ public class ExportJob {
 				" p.nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
 				" from (select * from tfidf where source='gdp') t join " +
 				" (SELECT fv,MAX(nation) as nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM feature_merge" +
-				" WHERE fv IS NOT NULL AND ft == 'keyword'  GROUP BY fv)p" +
+				" WHERE fv IS NOT NULL AND ft = 'keyword'  GROUP BY fv)p" +
 				" on p.fv=t.word)c " +
 				" where c.uid is not null "+ new Condition().createExportConditionSent("userKeywordMerge");
 		System.out.println("==================gdpuserKeywordExport-sql==================");
@@ -86,7 +86,7 @@ public class ExportJob {
 				" p.nation,p.pv,p.sv,p.impr,p.click,t.wc,t.tf,t.idf,t.tfidf " +
 				" from (select * from tfidf where source='ssp') t join " +
 				" (SELECT uid,fv,MAX(nation) as nation,SUM(pv) AS pv,SUM(sv) AS sv,SUM(impr) AS impr,SUM(click) AS click FROM profile_merge" +
-				" WHERE fv IS NOT NULL  AND uid IS NOT NULL AND ft == 'keyword' GROUP BY uid,fv)p" +
+				" WHERE fv IS NOT NULL  AND uid IS NOT NULL AND ft = 'keyword' GROUP BY uid,fv)p" +
 				" on p.uid=t.uid and p.fv=t.word)c " +
 				" where c.uid is not null "+ new Condition().createExportConditionSent("userKeywordMerge");
 		System.out.println("==================sspuserKeywordExport-sql==================");

@@ -125,6 +125,10 @@ public class PrepareJob extends Job{
 		return 0;
 	}
 	
+	
+	/*
+	 * 注意RLIKE和split中的正则表达式
+	 */
 	public static int gdpODP(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
@@ -132,8 +136,8 @@ public class PrepareJob extends Job{
 				"SELECT t.uid,t.nation,t.domain,o.category,t.visit FROM odin.odp o " +
 				"RIGHT OUTER JOIN (SELECT a.uid,a.nation,a.domain,COUNT(1) AS visit FROM(SELECT regexp_replace(uid,',','') AS uid," +
 				"regexp_replace(nation,',','') AS nation, parse_url (regexp_replace(url,',',''), 'HOST') AS domain FROM odin.gdp  " +
-				"WHERE DAY='"+day+"') a  WHERE a.domain IS NOT NULL  AND NOT(a.domain RLIKE '\\d+\\.\\d+\\.\\d+\\.\\d+')  " +
-				"AND size (split (a.domain, '\\.')) >= 2  GROUP BY a.uid,a.nation,a.domain) t  ON t.domain = o.host";
+				"WHERE DAY='"+day+"') a  WHERE a.domain IS NOT NULL  AND NOT(a.domain RLIKE '\\\\d+\\\\.\\\\d+\\\\.\\\\d+\\\\.\\\\d+')  " +
+				"AND size (split (a.domain, '\\\\.')) >= 2  GROUP BY a.uid,a.nation,a.domain) t  ON t.domain = o.host";
 		System.out.println("=================PrepareJob-gdpODP-sql===================");
 		System.out.println(hql);
 		System.out.println("=================PrepareJob-gdpODP-sql===================");

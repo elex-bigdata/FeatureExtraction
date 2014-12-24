@@ -271,7 +271,7 @@ FROM
     ON t.domain = o.host  
     
 ====gdp_odp分析======
-select case when category is not null then 'yes' else 'no' end,sum(visit) from gdp_odp group by case when category is not null then 'yes' else 'no' end;
+select day,case when category is not null then 'yes' else 'no' end,sum(visit) from gdp_odp group by case when category is not null then 'yes' else 'no' end,day;
 
 create table gdp_utag(uid string,nation string,tag string,visit int)partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 
