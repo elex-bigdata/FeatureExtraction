@@ -54,7 +54,7 @@ public class PrepareJob extends Job{
 		stmt.execute("CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon'");
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
 		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
-		String imprHql = " (SELECT i.reqid,CASE WHEN i.adid IS NULL OR i.adid='' THEN '"+adid+"' ELSE i.adid END AS adid,i,impr,i.time,i.ndt FROM (SELECT reqid,MAX(regexp_replace(CONCAT(adid),'"+adid+"','')) AS adid,MAX(dt) AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid,slot)i)b ";
+		String imprHql = " (SELECT i.reqid,CASE WHEN i.adid IS NULL OR i.adid='' THEN '"+adid+"' ELSE i.adid END AS adid,i.impr,i.time,i.ndt FROM (SELECT reqid,MAX(regexp_replace(CONCAT(adid),'"+adid+"','')) AS adid,MAX(dt) AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid,slot)i)b ";
 		String clickHql = " (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='"+day+"' GROUP BY reqid)c ";
 		String searchHql = " (SELECT reqid,concatcolon(qn(keyword)) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
 		String hql = preHql+"SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,case when a.pv is null then 0 else a.pv end," +
