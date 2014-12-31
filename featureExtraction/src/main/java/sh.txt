@@ -6,6 +6,9 @@ https://github.com/elex-bigdata/FEComm.git
 
 add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
 
+
+
+
 CREATE TEMPORARY FUNCTION area AS 'com.elex.ssp.udf.IPDim';
 CREATE TEMPORARY FUNCTION timefunc as 'com.elex.ssp.udf.TimeDim';
 CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query';
@@ -15,6 +18,10 @@ CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit';
 CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon';
 CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace';
 CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord';
+
+add jar /home/hadoop/git_project_home/feudf/feUDF/target/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION cadid AS 'com.elex.ssp.udf.ChooseAdid';
+CREATE TEMPORARY FUNCTION cdt AS 'com.elex.ssp.udf.ChooseDt';
 
 select qn(keyword) as col1,ql(keyword) as col2,wc(keyword) as col2 from search where day ='20141021' and nation='ph' limit 10;
 

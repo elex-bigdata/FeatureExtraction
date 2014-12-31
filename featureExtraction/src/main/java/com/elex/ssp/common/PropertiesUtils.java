@@ -71,4 +71,9 @@ public class PropertiesUtils {
 		return pop.getProperty("adid");
 	}
 
+	public static String getDt() {
+		// TODO Auto-generated method stub
+		return pop.getProperty("dt");
+	}
+
 }
