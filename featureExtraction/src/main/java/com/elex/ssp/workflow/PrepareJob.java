@@ -64,7 +64,7 @@ public class PrepareJob extends Job{
 		String searchHql = " (SELECT reqid,concatcolon(qn(keyword)) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
 		String hql = preHql+"SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,case when a.pv is null then 0 else a.pv end," +
 				"b.adid,case when b.impr is null then 0 else b.impr end,b.time,case when c.click is null then 0 else c.click end," +
-				"d.q,case when d.sv is null then 0 else d.sv end,CASE WHEN b.ndt IS NULL THEN 'default' ELSE b.ndt END FROM "+imprHql+"LEFT OUTER JOIN "+navHql+"ON a.reqid = b.reqid LEFT OUTER JOIN "+clickHql+"ON c.reqid = b.reqid LEFT OUTER JOIN "+searchHql+"ON d.reqid = b.reqid where length(b.adid)=5";
+				"d.q,case when d.sv is null then 0 else d.sv end,CASE WHEN b.ndt IS NULL THEN 'default' ELSE b.ndt END FROM "+imprHql+"LEFT OUTER JOIN "+navHql+"ON a.reqid = b.reqid LEFT OUTER JOIN "+clickHql+"ON c.reqid = b.reqid LEFT OUTER JOIN "+searchHql+"ON d.reqid = b.reqid";
 		System.out.println("==================PrepareJob-logMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================PrepareJob-logMerge-sql==================");
