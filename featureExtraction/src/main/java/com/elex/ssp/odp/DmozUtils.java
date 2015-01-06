@@ -1,5 +1,6 @@
 package com.elex.ssp.odp;
 
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,6 +21,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.elex.ssp.URLUtil;
 
 public class DmozUtils extends DefaultHandler {
 
@@ -81,9 +84,9 @@ public class DmozUtils extends DefaultHandler {
 					url = attributes.getValue("about");
 					if (url != null) {
 						if (url.startsWith("http") || url.startsWith("https")) {
-							host = new URL(url).getHost();
+							host = URLUtil.getDomainName(new URL(url));
 						} else {
-							host = new URL("http://" + url).getHost();
+							host = URLUtil.getDomainName(new URL("http://" + url));
 						}
 						out.write(host + ",");
 					}

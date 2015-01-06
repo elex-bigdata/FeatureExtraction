@@ -42,9 +42,6 @@ public class PrepareJob extends Job{
 	 * @param day
 	 * @return
 	 * @throws SQLException
-	 * length(b.adid)=5如果adid的长度不是统一的5位，where子句要修改
-	 * 子查询b的目的是去掉passback前的重复流量记录
-	 * 如果passback要多次b子查询不可用
 	 */
 	public static int logMerge(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
@@ -142,14 +139,17 @@ public class PrepareJob extends Job{
 	
 	/*
 	 * 注意RLIKE和split中的正则表达式
+	 * parse_url (regexp_replace(url,',',''), 'HOST')
 	 */
 	public static int gdpODP(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
+		stmt.execute("add jar " + Constants.UDFJAR);
+		stmt.execute("CREATE TEMPORARY FUNCTION get_domain AS 'com.elex.ssp.udf.Domain'");
 		String hql ="INSERT OVERWRITE TABLE odin.gdp_odp PARTITION (DAY='"+day+"') " +
 				"SELECT t.uid,t.nation,t.domain,o.category,t.visit FROM odin.odp o " +
 				"RIGHT OUTER JOIN (SELECT a.uid,a.nation,a.domain,COUNT(1) AS visit FROM(SELECT regexp_replace(uid,',','') AS uid," +
-				"regexp_replace(nation,',','') AS nation, parse_url (regexp_replace(url,',',''), 'HOST') AS domain FROM odin.gdp  " +
+				"regexp_replace(nation,',','') AS nation, get_domain(url) AS domain FROM odin.gdp  " +
 				"WHERE DAY='"+day+"') a  WHERE a.domain IS NOT NULL  AND NOT(a.domain RLIKE '\\\\d+\\\\.\\\\d+\\\\.\\\\d+\\\\.\\\\d+')  " +
 				"AND size (split (a.domain, '\\\\.')) >= 2  GROUP BY a.uid,a.nation,a.domain) t  ON t.domain = o.host";
 		System.out.println("=================PrepareJob-gdpODP-sql===================");

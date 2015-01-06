@@ -18,8 +18,6 @@ CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit';
 CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon';
 CREATE TEMPORARY FUNCTION concatspace AS 'com.elex.ssp.udf.GroupConcatSpace';
 CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord';
-
-add jar /home/hadoop/git_project_home/feudf/feUDF/target/feUDF-1.0.jar;
 CREATE TEMPORARY FUNCTION cadid AS 'com.elex.ssp.udf.ChooseAdid';
 CREATE TEMPORARY FUNCTION cdt AS 'com.elex.ssp.udf.ChooseDt';
 
