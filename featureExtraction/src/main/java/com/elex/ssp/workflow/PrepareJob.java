@@ -38,7 +38,9 @@ public class PrepareJob extends Job{
 	
 
 	/**
-	 * 
+	 * 按reqid拼接日志，以广告展现表左关联nv表获取用户属性，结果再左关联点击表获取点击数据，结果再左关联搜索表获取搜索词。
+	 * 如果一个reqid（请求）有多个广告（adid），展现表的汇总结果需要加上slot的group条件。click需要新增adid字段，同时click表的汇总结果需要加上adid的group条件。
+	 * 展现表用reqid与nv表左关联，结果再用reqid和adid与click表左关联，之后如搜索表的左关联也如此。
 	 * @param day
 	 * @return
 	 * @throws SQLException
@@ -56,7 +58,7 @@ public class PrepareJob extends Job{
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
 		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
 		//String imprHql = " (SELECT reqid,adid,case when dt is null then 'default' else dt end as ndt,max(time) as time,1 AS impr FROM ad_impression WHERE DAY='"+day+"' group by reqid,adid,dt)b ";
-		String imprHql = " (SELECT reqid,cadid(adid,'','"+adid+"') AS adid,cdt(dt,'"+dt+"') AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid)b ";
+		String imprHql = " (SELECT reqid,cadid(adid,'','"+adid+"') AS adid,cdt(dt,'"+dt+"') AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid,slot)b ";
 		String clickHql = " (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='"+day+"' GROUP BY reqid)c ";
 		String searchHql = " (SELECT reqid,concatcolon(qn(keyword)) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
 		String hql = preHql+"SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,case when a.pv is null then 0 else a.pv end," +
@@ -70,11 +72,19 @@ public class PrepareJob extends Job{
 		return 0;
 	}
 	
+	
+	/**
+	 * 按reqid合并日志，在log_merge表的基础上将一个请求的多个adid合并为一条。
+	 * 便于user-profile的生成，因为user-profile是以uid作为统计维度，不再关心adid。
+	 * @param day
+	 * @return
+	 * @throws SQLException
+	 */
 	public static int logMerge2(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		String hql = "insert overwrite table log_merge2 partition(day='"+day+"') " +
-				"select reqid,max(time),uid,max(pid),max(ip),max(nation),max(ua),max(os),max(width),max(height),max(pv),sum(impr),max(click),max(sv),dt " +
+				"select reqid,max(time),uid,max(pid),max(ip),max(nation),max(ua),max(os),max(width),max(height),max(pv),sum(impr),sum(click),max(sv),dt " +
 				"from log_merge where day ='"+day+"' and uid is not null group by reqid,uid,dt";
 		stmt.execute(hql);
 		System.out.println("==================PrepareJob-logMerge2-sql==================");
@@ -84,6 +94,12 @@ public class PrepareJob extends Job{
 		return 0;		
 	}
 	
+	/**
+	 * 将log_merge表中的搜索日志拆分，之前是使用：合并多条。便于后续的query、word_count、query_length特征的提取。
+	 * @param day
+	 * @return
+	 * @throws SQLException
+	 */
 	public static int queryEnCollect(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
@@ -100,13 +116,19 @@ public class PrepareJob extends Job{
 		return 0;
 	}
 	
+	/**
+	 * 拆分log_merge表的搜索日志，但将一个reqid含有多个adid的情况按reqid和query合并，也是便于user-profile的生成，
+	 * @param day
+	 * @return
+	 * @throws SQLException
+	 */
 	public static int queryEnCollect2(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
 		stmt.execute("CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'");
 		String preHql = " insert overwrite table query_en2 partition(day='"+day+"') ";
-		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),sum(impr),max(sv),max(click),dt from log_merge lateral view qs(query,':') tab as col1 " +
+		String hql = preHql+" select reqid,uid,tab.col1,nation,max(pv),sum(impr),max(sv),sum(click),dt from log_merge lateral view qs(query,':') tab as col1 " +
 				"where day ='"+day+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and query is not null and nation is not null and uid is not null " +
 						"group by reqid,uid,tab.col1,nation,dt";
 		System.out.println("==================PrepareJob-queryEnCollect2-sql==================");
@@ -117,6 +139,12 @@ public class PrepareJob extends Job{
 		return 0;
 	}
 	
+	/**
+	 * 提取gdp中的google搜索关键词
+	 * @param day
+	 * @return
+	 * @throws SQLException
+	 */
 	public static int gdpGoogleSearch(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
@@ -137,7 +165,8 @@ public class PrepareJob extends Job{
 	}
 	
 	
-	/*
+	/**
+	 * 提取gdp行为的odp分类，同时统计每个用户对每个域名的访问次数。
 	 * 注意RLIKE和split中的正则表达式
 	 * parse_url (regexp_replace(url,',',''), 'HOST')
 	 */
@@ -160,7 +189,12 @@ public class PrepareJob extends Job{
 		return 0;
 	}
 	
-	
+	/**
+	 * 如果一个gdp行为对应多个odp分类，将其拆分、便于后续统计，而且只保留了具有odp分类的行为。
+	 * @param day
+	 * @return
+	 * @throws SQLException
+	 */
 	public static int gdpUTag(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();

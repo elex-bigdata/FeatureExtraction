@@ -1,4 +1,7 @@
 清理：sh clean.sh 20141025 20141113 >> clean_cmd.txt
+
+hadoop fs -du -sh /user/hive/warehouse/odin.db
+
 git clone https://github.com/elex-bigdata/feudf.git
 
 https://github.com/elex-bigdata/FeatureExtraction.git
@@ -202,9 +205,11 @@ select count(1) from (select a.uid from(select distinct uid from query_en2 where
 
 
 =================gdp_odp=========================
-java -cp .:odp.jar:dmoz.txt com.elex.ssp.odp.DmozUtils /data1/yac_url/content.rdf.u8 /data1/yac_url/rdf.csv >> error.txt
+java -cp .:featureExtraction-1.0.jar:dmoz.txt com.elex.ssp.odp.DmozUtils /data1/yac_url/content.rdf.u8 /data1/yac_url/rdf.csv >> error.txt
 
-cat rdf.csv | awk '{print $1}' >> a.txt
+cat rdf.csv | sort | uniq >> uniq.txt
+
+cat uniq.txt | awk '{print $1}' >> a.txt
 
 create table odp_init(host string,category string)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 
@@ -246,7 +251,11 @@ drop table odp_init;
 create table gdp_odp(uid string,nation string,host string,category string,visit int) partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 
 ====使用. 作为split分隔符时候要加上\\,否则hive会将.解释为正则中的特殊字符===========
-INSERT OVERWRITE TABLE gdp_odp PARTITION (DAY = '20141118') 
+
+add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION get_domain AS 'com.elex.ssp.udf.Domain';
+
+INSERT OVERWRITE TABLE odin.gdp_odp PARTITION (DAY = '20150105') 
 SELECT 
   t.uid,
   t.nation,
@@ -254,8 +263,9 @@ SELECT
   o.category,
   t.visit 
 FROM
-  odp o 
-  RIGHT OUTER JOIN 
+  odin.odp o 
+  RIGHT 
+  OUTER JOIN 
     (SELECT 
       a.uid,
       a.nation,
@@ -263,39 +273,43 @@ FROM
       COUNT(1) AS visit 
     FROM
       (SELECT 
-        regexp_replace(uid,',','') as uid,
-        regexp_replace(nation,',','') as nation,
-        parse_url (regexp_replace(url,',',''), 'HOST') AS domain 
+        regexp_replace (uid, ',', '') AS uid,
+        regexp_replace (nation, ',', '') AS nation,
+        get_domain (url) AS domain 
       FROM
         odin.gdp 
-      WHERE DAY = '20141118') a 
+      WHERE DAY = '20150105') a 
     WHERE a.domain IS NOT NULL 
-      AND NOT(a.domain RLIKE '\\d+\\.\\d+\\.\\d+\\.\\d+') 
+      AND NOT (
+        a.domain RLIKE '\\d+\\.\\d+\\.\\d+\\.\\d+'
+      ) 
       AND size (split (a.domain, '\\.')) >= 2 
-    GROUP BY a.uid,a.nation,a.domain) t 
-    ON t.domain = o.host  
+    GROUP BY a.uid,
+      a.nation,
+      a.domain) t 
+    ON t.domain = o.host; 
     
 ====gdp_odp分析======
-select day,case when category is not null then 'yes' else 'no' end,sum(visit) from gdp_odp group by case when category is not null then 'yes' else 'no' end,day;
+select day,case when category is not null then 'yes' else 'no' end,sum(visit) from gdp_odp where day='20150106' group by case when category is not null then 'yes' else 'no' end,day;
 
 create table gdp_utag(uid string,nation string,tag string,visit int)partitioned by(day string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
 
-add jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
-CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit';
+ADD jar /home/hadoop/wuzhongju/ssp/feUDF-1.0.jar;
+CREATE TEMPORARY FUNCTION qs AS 'com.elex.ssp.udf.QuerySplit'
 
-INSERT overwrite TABLE gdp_utag PARTITION (DAY = '20141118') 
+INSERT overwrite TABLE odin.gdp_utag PARTITION (DAY = '20150105') 
 SELECT 
   uid,
   nation,
   tab.col1,
   SUM(visit) 
 FROM
-  gdp_odp lateral VIEW qs (category, ':') tab AS col1 
+  odin.gdp_odp lateral VIEW qs (category, ':') tab AS col1 
 WHERE category IS NOT NULL 
-  AND array_contains (array ('br'), nation) 
+  AND DAY = '20150105' 
 GROUP BY uid,
   nation,
-  tab.col1     
+  tab.col1    
 
 ====gdp_utag分析=====
 select tag,count(distinct uid),sum(visit) from gdp_utag group by tag;

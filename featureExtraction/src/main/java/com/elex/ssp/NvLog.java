@@ -27,26 +27,21 @@ public class NvLog {
 		BufferedWriter out = new BufferedWriter(new FileWriter(dist));
 
 		String[] kv;
-		String reqid="null",nation="null",uid="null",type="null",from="null",equip="null";
+		String reqid="null",nation="null",uid="null",type="null",from="null";
 		for (File log : logs) {
 			in = new BufferedReader(new FileReader(log));
 			String line = in.readLine();
 			while (line != null ) {
 					kv = line.trim().split("\t");
 					if(kv.length==6){
-						try{
-							if(kv[3].matches("Android|iPhone|BlackBerry|Windows Phone|iPad")){
-								equip="mobile";
-							}else{
-								equip="fixed";
-							}
+						try{							
 
 							type=kv[4].contains("type=")?kv[4].substring(kv[4].indexOf("type=")+5,kv[4].indexOf("&", kv[4].indexOf("type=")+5)==-1?kv[4].length():kv[4].indexOf("&", kv[4].indexOf("type=")+5)):type;
 							from=kv[4].contains("from=")?kv[4].substring(kv[4].indexOf("from=")+5,kv[4].indexOf("&", kv[4].indexOf("from=")+5)==-1?kv[4].length():kv[4].indexOf("&", kv[4].indexOf("from=")+5)):from;
 							uid=kv[5].substring(kv[5].indexOf("User_id=")+8,kv[5].indexOf("&", kv[5].indexOf("User_id=")+8)==-1?kv[5].length():kv[5].indexOf("&", kv[5].indexOf("User_id=")+8));
 							reqid=kv[5].substring(kv[5].indexOf("reqID=")+6,kv[5].indexOf("&", kv[5].indexOf("reqID=")+6)==-1?kv[5].length():kv[5].indexOf("&", kv[5].indexOf("reqID=")+6));
 							nation=kv[5].substring(kv[5].indexOf("User_nation=")+12,kv[5].indexOf("&", kv[5].indexOf("User_nation=")+12)==-1?kv[5].length():kv[5].indexOf("&", kv[5].indexOf("User_nation=")+12));
-							out.write(reqid+" "+uid+" "+nation+" "+type+" "+from +" "+equip+"\r\n");
+							out.write(reqid+" "+uid+" "+nation+" "+type+" "+from+"\r\n");
 						}catch (StringIndexOutOfBoundsException e){
 							System.out.println(line);
 						}
