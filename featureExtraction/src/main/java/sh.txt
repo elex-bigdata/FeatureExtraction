@@ -1,4 +1,5 @@
 清理：sh clean.sh 20141025 20141113 >> clean_cmd.txt
+jar -uvf featureExtraction-1.0.jar conf.properties
 
 hadoop fs -du -sh /user/hive/warehouse/odin.db
 
