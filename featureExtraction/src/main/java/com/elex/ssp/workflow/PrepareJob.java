@@ -50,8 +50,6 @@ public class PrepareJob extends Job{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		stmt.execute("add jar " + Constants.UDFJAR);
-		String adid = PropertiesUtils.getAdid();
-		String dt = PropertiesUtils.getDt();
 		stmt.execute("CREATE TEMPORARY FUNCTION qn AS 'com.elex.ssp.udf.Query'");
 		stmt.execute("CREATE TEMPORARY FUNCTION concatcolon AS 'com.elex.ssp.udf.GroupConcatColon'");
 		stmt.execute("CREATE TEMPORARY FUNCTION cadid AS 'com.elex.ssp.udf.ChooseAdid'");
@@ -59,12 +57,12 @@ public class PrepareJob extends Job{
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
 		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv,max(ref) as ref,max(opt) as opt  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
 		//String imprHql = " (SELECT reqid,adid,case when dt is null then 'default' else dt end as ndt,max(time) as time,1 AS impr FROM ad_impression WHERE DAY='"+day+"' group by reqid,adid,dt)b ";
-		String imprHql = " (SELECT reqid,cadid(adid,'"+adid+"') AS adid,cdt(dt,'"+dt+"') AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid,slot)b ";
+		String imprHql = " (SELECT reqid,cadid(adid) AS adid,cdt(dt) AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid,slot)b ";
 		String clickHql = " (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='"+day+"' GROUP BY reqid)c ";
 		String searchHql = " (SELECT reqid,concatcolon(qn(keyword)) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
 		String hql = preHql+"SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,case when a.pv is null then 0 else a.pv end," +
 				"b.adid,case when b.impr is null then 0 else b.impr end,b.time,case when c.click is null then 0 else c.click end," +
-				"d.q,case when d.sv is null then 0 else d.sv end,CASE WHEN b.ndt IS NULL THEN 'default' ELSE b.ndt END,b.ref,b.opt" +
+				"d.q,case when d.sv is null then 0 else d.sv end,CASE WHEN b.ndt IS NULL THEN 'default' ELSE b.ndt END,a.ref,a.opt" +
 				" FROM "+imprHql+"LEFT OUTER JOIN "+navHql+"ON a.reqid = b.reqid LEFT OUTER JOIN "+clickHql+"ON c.reqid = b.reqid" +
 				" LEFT OUTER JOIN "+searchHql+"ON d.reqid = b.reqid";
 		System.out.println("==================PrepareJob-logMerge-sql==================");
