@@ -25,13 +25,14 @@ public class MergeJob {
 	
 	public static int featureMerge() throws SQLException{
 		String preHql = "insert overwrite table feature_merge ";
-		String hql = preHql+" select ft,fv,nation,adid,sum(pv),sum(sv),sum(impr),sum(click)," +
+		String hql = preHql+" select ft,CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END," +
+				"nation,adid,sum(pv),sum(sv),sum(impr),sum(click)," +
 				"round(case when sum(click) is null or sum(pv) is null then 0 else sum(click)/sum(pv) end,4)," +
 				"round(case when sum(click) is null or sum(impr) is null then 0 else sum(click)/sum(impr) end,4)," +
 				"round(case when sum(impr) is null or sum(pv) is null then 0 else sum(impr)/sum(pv) end,4) " +
 				" from feature  " +
 				" where day >'"+Constants.getStartDay()+"' and fv is not null and dt is not null " +
-				" group by ft,fv,nation,adid";
+				" group by ft,CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END,nation,adid";
 		System.out.println("==================featureMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================featureMerge-sql==================");
@@ -39,10 +40,13 @@ public class MergeJob {
 	}
 	
 	public static int profileMerge() throws SQLException{
-		String hql = "insert overwrite table profile_merge  select uid,ft,fv,nation,sum(pv),sum(sv),sum(impr),sum(click) " +
+		String hql = "insert overwrite table profile_merge  select uid,ft," +
+				" CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END," +
+				" nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
-				" where day >'"+Constants.getStartDay()+"' and fv is not null and dt is not null " +
-				" group by uid,ft,fv,nation";
+				" where day >'"+Constants.getStartDay()+"'" +
+				" and fv is not null and dt is not null " +
+				" group by uid,ft,CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END,nation";
 		System.out.println("==================profileMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================profileMerge-sql==================");

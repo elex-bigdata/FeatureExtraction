@@ -39,7 +39,7 @@ public class PrepareJob extends Job{
 
 	/**
 	 * 按reqid拼接日志，以广告展现表左关联nv表获取用户属性，结果再左关联点击表获取点击数据，结果再左关联搜索表获取搜索词。
-	 * 
+	 * 如果没有passback，cadid和cdt函数要改为max；
 	 * 如果一个reqid（请求）有多个广告（adid），展现表的汇总结果需要加上slot的group条件。click需要新增adid字段，同时click表的汇总结果需要加上adid的group条件。
 	 * 展现表用reqid与nv表左关联，结果再用reqid和adid与click表左关联，之后如搜索表的左关联也如此。
 	 * @param day
@@ -57,14 +57,16 @@ public class PrepareJob extends Job{
 		stmt.execute("CREATE TEMPORARY FUNCTION cadid AS 'com.elex.ssp.udf.ChooseAdid'");
 		stmt.execute("CREATE TEMPORARY FUNCTION cdt AS 'com.elex.ssp.udf.ChooseDt'");
 		String preHql = " insert overwrite table log_merge partition(day='"+day+"') ";
-		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
+		String navHql = " (SELECT reqid,MAX(regexp_replace(uid,',','')) as uid,MAX(pid) as pid,MAX(ip) as ip,MAX(nation) as nation,MAX(ua) as ua,MAX(os) as os,MAX(width) as width,MAX(height) as height,1 AS pv,max(ref) as ref,max(opt) as opt  FROM nav_visit WHERE DAY = '"+day+"' GROUP BY reqid )a ";
 		//String imprHql = " (SELECT reqid,adid,case when dt is null then 'default' else dt end as ndt,max(time) as time,1 AS impr FROM ad_impression WHERE DAY='"+day+"' group by reqid,adid,dt)b ";
 		String imprHql = " (SELECT reqid,cadid(adid,'"+adid+"') AS adid,cdt(dt,'"+dt+"') AS ndt,1 AS impr,MAX(TIME) AS TIME FROM ad_impression WHERE DAY = '"+day+"' GROUP BY reqid,slot)b ";
 		String clickHql = " (SELECT reqid,COUNT(1) AS click FROM ad_click WHERE DAY ='"+day+"' GROUP BY reqid)c ";
 		String searchHql = " (SELECT reqid,concatcolon(qn(keyword)) AS q,COUNT(uid) AS sv FROM search WHERE DAY='"+day+"' GROUP BY reqid)d ";
 		String hql = preHql+"SELECT b.reqid,a.uid,a.pid,a.ip,a.nation,a.ua,a.os,a.width,a.height,case when a.pv is null then 0 else a.pv end," +
 				"b.adid,case when b.impr is null then 0 else b.impr end,b.time,case when c.click is null then 0 else c.click end," +
-				"d.q,case when d.sv is null then 0 else d.sv end,CASE WHEN b.ndt IS NULL THEN 'default' ELSE b.ndt END FROM "+imprHql+"LEFT OUTER JOIN "+navHql+"ON a.reqid = b.reqid LEFT OUTER JOIN "+clickHql+"ON c.reqid = b.reqid LEFT OUTER JOIN "+searchHql+"ON d.reqid = b.reqid";
+				"d.q,case when d.sv is null then 0 else d.sv end,CASE WHEN b.ndt IS NULL THEN 'default' ELSE b.ndt END,b.ref,b.opt" +
+				" FROM "+imprHql+"LEFT OUTER JOIN "+navHql+"ON a.reqid = b.reqid LEFT OUTER JOIN "+clickHql+"ON c.reqid = b.reqid" +
+				" LEFT OUTER JOIN "+searchHql+"ON d.reqid = b.reqid";
 		System.out.println("==================PrepareJob-logMerge-sql==================");
 		System.out.println(hql);
 		System.out.println("==================PrepareJob-logMerge-sql==================");
@@ -85,7 +87,7 @@ public class PrepareJob extends Job{
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
 		String hql = "insert overwrite table log_merge2 partition(day='"+day+"') " +
-				"select reqid,max(time),uid,max(pid),max(ip),max(nation),max(ua),max(os),max(width),max(height),max(pv),sum(impr),sum(click),max(sv),dt " +
+				"select reqid,max(time),uid,max(pid),max(ip),max(nation),max(ua),max(os),max(width),max(height),max(pv),sum(impr),sum(click),max(sv),dt,max(ref),max(opt) " +
 				"from log_merge where day ='"+day+"' and uid is not null group by reqid,uid,dt";
 		stmt.execute(hql);
 		System.out.println("==================PrepareJob-logMerge2-sql==================");

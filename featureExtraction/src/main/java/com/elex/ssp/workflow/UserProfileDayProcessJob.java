@@ -37,8 +37,43 @@ public class UserProfileDayProcessJob extends Job{
 		result += UserProfileDayProcessJob.queryLengthFeature(day);
 		result += UserProfileDayProcessJob.queryWordCountFeature(day);
 		result += UserProfileDayProcessJob.keywordFeature(day);
+		result += UserProfileDayProcessJob.refFeature(day);
+		result += UserProfileDayProcessJob.optFeature(day);
 		return result;
 	}
+	
+	public static int refFeature(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='ref') ";
+		String hql = preHql+" select uid,ref,nation,sum(pv),sum(sv),sum(impr),sum(click),dt " +
+				"from log_merge2 " +
+				"where day ='"+day+"' and ref is not null and uid is not null and nation is not null and dt is not null " +
+				" group by uid,ref,nation,dt";
+		System.out.println("==================profileDayProcess-refFeature-sql==================");
+		System.out.println(hql);
+		System.out.println("==================profileDayProcess-refFeature-sql==================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
+	}
+	
+	public static int optFeature(String day) throws SQLException{
+		Connection con = HiveOperator.getHiveConnection();
+		Statement stmt = con.createStatement();
+		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='opt') ";
+		String hql = preHql+" select uid,opt,nation,sum(pv),sum(sv),sum(impr),sum(click),dt " +
+				"from log_merge2 " +
+				"where day ='"+day+"' and opt is not null and uid is not null and nation is not null and dt is not null " +
+				" group by uid,opt,nation,dt";
+		System.out.println("==================profileDayProcess-optFeature-sql==================");
+		System.out.println(hql);
+		System.out.println("==================profileDayProcess-optFeature-sql==================");
+		stmt.execute(hql);
+		stmt.close();
+		return 0;
+	}
+	
 	
 	public static int timeFeature(String day) throws SQLException{
 		Connection con = HiveOperator.getHiveConnection();
@@ -67,7 +102,7 @@ public class UserProfileDayProcessJob extends Job{
 		String preHql = "insert overwrite table profile partition(day='"+day+"',ft='area') ";
 		String hql = preHql+" select uid,area(ip),nation,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge2 " +
-				"where day ='"+day+"' and ip is not null and uid is not null and nation is not null and dt is not null " +
+				"where day ='"+day+"' and size(split(ip, '\\\\.')) >= 2 and uid is not null and nation is not null and dt is not null " +
 				" group by uid,area(ip),nation,dt";
 		System.out.println("==================profileDayProcess-IPFeature-sql==================");
 		System.out.println(hql);
