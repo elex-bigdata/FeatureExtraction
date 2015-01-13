@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import com.elex.ssp.common.Constants;
 import com.elex.ssp.common.HiveOperator;
+import com.elex.ssp.common.PropertiesUtils;
 
 public class MergeJob {
 
@@ -31,7 +32,7 @@ public class MergeJob {
 				"round(case when sum(click) is null or sum(impr) is null then 0 else sum(click)/sum(impr) end,4)," +
 				"round(case when sum(impr) is null or sum(pv) is null then 0 else sum(impr)/sum(pv) end,4) " +
 				" from feature  " +
-				" where day >'"+Constants.getStartDay()+"' and fv is not null and dt is not null " +
+				" where day >'"+Constants.getStartDay()+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and fv is not null and dt is not null " +
 				" group by ft,CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END,nation,adid";
 		System.out.println("==================featureMerge-sql==================");
 		System.out.println(hql);
@@ -44,7 +45,7 @@ public class MergeJob {
 				" CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END," +
 				" nation,sum(pv),sum(sv),sum(impr),sum(click) " +
 				" from profile  " +
-				" where day >'"+Constants.getStartDay()+"'" +
+				" where day >'"+Constants.getStartDay()+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation)" +
 				" and fv is not null and dt is not null " +
 				" group by uid,ft,CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END,nation";
 		System.out.println("==================profileMerge-sql==================");
