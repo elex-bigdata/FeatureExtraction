@@ -39,7 +39,7 @@ public class PrepareJob extends Job{
 
 	/**
 	 * 按reqid拼接日志，以广告展现表左关联nv表获取用户属性，结果再左关联点击表获取点击数据，结果再左关联搜索表获取搜索词。
-	 * 如果没有passback，cadid和cdt函数要改为max；
+	 * 因为有passback，所以需要自定义函数来剪除多记录的impr。主流量的adid和tag要在fecomm项目中配置。
 	 * 如果一个reqid（请求）有多个广告（adid），展现表的汇总结果需要加上slot的group条件。click需要新增adid字段，同时click表的汇总结果需要加上adid的group条件。
 	 * 展现表用reqid与nv表左关联，结果再用reqid和adid与click表左关联，之后如搜索表的左关联也如此。
 	 * @param day

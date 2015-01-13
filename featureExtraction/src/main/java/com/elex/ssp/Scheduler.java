@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.hadoop.conf.Configuration;
@@ -165,7 +166,22 @@ public class Scheduler {
 		String q2="alter table query_en2 drop partition (day='"+day+"')";
 		String odp1="alter table gdp_odp drop partition (day='"+day+"')";
 		String odp2="alter table gdp_utag drop partition (day='"+day+"')";
-		
+	
+		ArrayList<String> drops = new ArrayList<String>();
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS area");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS timefunc");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS qn");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS wc");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS wc");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS ql");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS qs");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS concatcolon");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS concatspace");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS sed");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS cadid");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS cdt");
+		drops.add("DROP TEMPORARY FUNCTION IF EXISTS get_domain");
+				
 		stmt.execute(log);
 		stmt.execute(log2);
 		stmt.execute(feature);
@@ -174,6 +190,12 @@ public class Scheduler {
 		stmt.execute(q2);	
 		stmt.execute(odp1);
 		stmt.execute(odp2);
+		
+		for(String sql:drops){
+			stmt.execute(sql);
+		}
+		
+		stmt.close();
 		return 0;
 	}
 
