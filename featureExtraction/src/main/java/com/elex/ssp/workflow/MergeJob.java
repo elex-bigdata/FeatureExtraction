@@ -32,7 +32,7 @@ public class MergeJob {
 				"round(case when sum(click) is null or sum(impr) is null then 0 else sum(click)/sum(impr) end,4)," +
 				"round(case when sum(impr) is null or sum(pv) is null then 0 else sum(impr)/sum(pv) end,4) " +
 				" from feature  " +
-				" where day >'"+Constants.getStartDay()+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and fv is not null and dt is not null " +
+				" where day >'"+Constants.getStartDay()+"' and array_contains(array("+PropertiesUtils.getNations()+"),nation) and fv is not null and fv !='' and dt is not null " +
 				" group by ft,CASE WHEN ft='area' THEN CONCAT(split(fv,'\\\\.')[0],'\\.',split(fv,'\\\\.')[1]) ELSE fv END,nation,adid";
 		System.out.println("==================featureMerge-sql==================");
 		System.out.println(hql);

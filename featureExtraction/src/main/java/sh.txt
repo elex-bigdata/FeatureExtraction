@@ -36,7 +36,8 @@ CREATE TEMPORARY FUNCTION sed as 'com.elex.ssp.udf.KeyWord';
 select sed(keyword) as col1 from search where day ='20141021' and nation='ph' limit 10;
 
 ======================准备输入数据==============================
-INSERT OVERWRITE LOCAL DIRECTORY '/home/hadoop/test' row format delimited fields terminated by ',' stored as textfile
+INSERT OVERWRITE LOCAL DIRECTORY '/home/hadoop/wuzhongju/ctr/data/input' row format delimited fields terminated by ',' stored as textfile
+
 array_contains(array('in','us','pk','ph','gb','au','za','lk','ca','sg','sg','nz','ie','ng','gh','cm'),s.nation)
 
 #齐全备料表
