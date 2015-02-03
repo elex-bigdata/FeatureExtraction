@@ -48,7 +48,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='ref') ";
 		String hql = preHql+" select ref,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge " +
-				"where day ='"+day+"' and ref is not null  and fv !='' and nation is not null and adid is not null and dt is not null " +
+				"where day ='"+day+"' and ref is not null  and ref !='' and nation is not null and adid is not null and dt is not null " +
 				" group by ref,nation,adid,dt";
 		System.out.println("==================DayProcess-refFeature-sql==================");
 		System.out.println(hql);
@@ -65,7 +65,7 @@ public class FeatureDayProcessJob extends Job {
 		String preHql = "insert overwrite table feature partition(day='"+day+"',ft='opt') ";
 		String hql = preHql+" select opt,nation,adid,sum(pv),sum(sv),sum(impr),sum(click),dt " +
 				"from log_merge " +
-				"where day ='"+day+"' and opt is not null  and fv !='' and nation is not null and adid is not null and dt is not null " +
+				"where day ='"+day+"' and opt is not null  and opt !='' and nation is not null and adid is not null and dt is not null " +
 				" group by opt,nation,adid,dt";
 		System.out.println("==================DayProcess-optFeature-sql==================");
 		System.out.println(hql);
