@@ -157,7 +157,7 @@ public class Scheduler {
 	private static int clean() throws SQLException {
 		Connection con = HiveOperator.getHiveConnection();
 		Statement stmt = con.createStatement();
-		String day = Constants.getStartDay();
+		String day = Constants.getClenDay();
 		String log="alter table log_merge drop partition (day='"+day+"')";
 		String log2="alter table log_merge2 drop partition (day='"+day+"')";
 		String feature="alter table feature drop partition (day='"+day+"')";

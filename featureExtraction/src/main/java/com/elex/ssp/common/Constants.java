@@ -23,12 +23,18 @@ public class Constants {
 	public static final String UDFJAR = "/home/hadoop/wuzhongju/ssp/feUDF-1.0.jar";
 
 	public static String getStartDay(){
+
+		int mergeDays = PropertiesUtils.getMergeDays()+1;		
+
+		return dayMinus(mergeDays);
+	}
+	
+	public static String dayMinus(int minusDays){
 		Calendar ca = Calendar.getInstance();
 		
-		Date now = new Date();
-		int mergeDays = PropertiesUtils.getMergeDays()+1;		
+		Date now = new Date();		
 		ca.setTime(now);
-		ca.add(Calendar.DATE, -mergeDays);
+		ca.add(Calendar.DATE, -minusDays);
 		String day = sdf.format(ca.getTime());	
 		return day;
 	}
@@ -88,10 +94,16 @@ public class Constants {
 	
 	
 	public static void main(String[] args) throws ParseException{
-		for(String a:getBetweenDate("20141028","20141102")){
+		/*for(String a:getBetweenDate("20141028","20141102")){
 			System.out.println(a);
-		}
+		}*/
 		
-		//System.out.println(getYestoday());
+		System.out.println(getClenDay());
+	}
+
+	public static String getClenDay() {
+		int cleanDays = 60;		
+
+		return dayMinus(cleanDays);
 	}
 }
