@@ -19,7 +19,7 @@ public class MergeJob {
 	public static int doJob() throws SQLException{
 		int result = 0;
 		result += MergeJob.featureMerge();
-		result += MergeJob.profileMerge();
+		//result += MergeJob.profileMerge();//使用机器学习后，为了节省运行时间，该部分程序不运行
 		result += odpFeatureMerge();
 		return result;
 	}
